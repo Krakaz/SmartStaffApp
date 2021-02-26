@@ -1,0 +1,60 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+@{
+    <p><h3>Текущее состояние</h3></p>
+
+    <table border="1">
+        <tr>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Кол-во сотрудников</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Рубеж 1</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Рубеж 2</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Целевое</td>
+        </tr>
+        <tr>
+            <td>@Model.CurrentData.CurrentCount</td>
+            <td>@Model.CurrentData.FirstTargetCount</td>
+            <td>@Model.CurrentData.SecondTargetCount</td>
+            <td>@Model.CurrentData.YearTargetCount</td>
+        </tr>
+        <tr>
+            <td>Осталось</td>
+            <td>@Model.CurrentData.FirstTargetDelta</td>
+            <td>@Model.CurrentData.SecondTargetDelta</td>
+            <td>@Model.CurrentData.YearTargetDelta</td>
+        </tr>
+    </table>
+    <br>
+    <br>
+    <p><h3>Сводка по месяцам</h3></p>
+    <table border="1">
+        <tr>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Месяц</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Нанято</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Приехало</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Уволено</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Итоговый прирост</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Проведено интервью</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Результативность</td>
+        </tr>
+        @foreach (var row in @Model.InformationByMonth)
+        {
+            <tr>
+                <td>@row.MonthName</td>
+                <td>@row.IncomingCnt</td>
+                <td>@row.ArivedCnt</td>
+                <td>@row.FiredCnt</td>
+                <td>@row.CulculateCount</td>
+                <td>@row.InterviewCnt</td>
+                <td>@row.ResultativityCnt %</td>
+            </tr>
+        }
+
+    </table>
+
+
+}
+

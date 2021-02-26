@@ -1,0 +1,38 @@
+﻿@page
+@model InterviewModel
+@{
+    ViewData["Title"] = "Interview";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Сводка по найму</h1>
+
+<table border="1">
+    <tr>
+        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Месяц</td>
+        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Направление</td>
+        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Должность</td>
+        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Нанято</td>
+        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Приехало</td>
+        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Уволено</td>
+        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Итоговый прирост</td>
+        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Проведено интервью</td>
+        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Результативность</td>
+    </tr>
+    @foreach (var row in @Model.DetailInformationByMonth)
+    {
+        <tr>
+            <td>@row.MonthName</td>
+            <td>@row.ParentPosition</td>
+            <td>@row.Position</td>
+            <td>@row.IncomingCnt</td>
+            <td>@row.ArivedCnt</td>
+            <td>@row.FiredCnt</td>
+            <td>@row.CulculateCount</td>
+            <td>@row.InterviewCnt</td>
+            <td>@row.ResultativityCnt %</td>
+        </tr>
+    }
+
+</table>
+

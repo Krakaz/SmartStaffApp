@@ -1,0 +1,111 @@
+﻿@page
+@model StaffModel
+@{
+    ViewData["Title"] = "Staff";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Сотрудники</h1>
+<div>
+    @{
+        <table border="1">
+            <tr>
+                @foreach (var item in Model.ShortActiveStaffs)
+                {
+                <td style="background-color: rgb(250, 243, 210);width: 100px;">@item.DirectionName</td>
+                }
+                <td style="background-color: rgb(250, 243, 210);width: 100px; font-weight: bold;">Всего</td>
+            </tr>
+            <tr>
+                @foreach (var item in Model.ShortActiveStaffs)
+                {
+                <td style="width: 50px;">@item.StaffCount</td>
+                }
+                <td style="width: 50px; font-weight: bold;">@Model.ShortActiveStaffs.Sum(el => el.StaffCount)</td>
+            </tr>
+        </table>
+    }
+</div>
+<br />
+<form method="get" onsubmit="submitForm()">
+    <label for="staffStatus" style="margin-left: 10px;">Статус</label>
+    <select name="staffStatus" id="staffStatusId">
+        <option value="0">Все</option>
+        <option value="1">Активные</option>
+        <option value="2">Уволенные</option>
+    </select>
+
+    <label for="staffArivedStatus" style="margin-left: 10px;">Статус прибытия</label>
+    <select name="staffArivedStatus" id="staffArivedStatusId">
+        <option value="0">Все</option>
+        <option value="1">Нанятые в Краснодаре</option>
+        <option value="2">Понаехавшие</option>
+    </select>
+
+    <label for="directionId" style="margin-left: 10px;">Направление</label>
+    <select name="directionId" id="directionId" asp-items="Model.Directions"></select>
+
+    <input type="submit" style="float: right">
+</form>
+<br />
+
+<div>
+    @{ var index = 0;}
+    <table border="1">
+        <tr>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">№</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">ФИО</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">День рождения</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Первый рабочий день</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Должность</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Направление</td>
+            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Телефон</td>
+        </tr>
+        @foreach (var row in @Model.Staffs)
+        {
+            var style = (!row.IsActive) ? "background-color: rgb(242, 200, 200)" : (row.IsArived) ? "background-color: rgb(250, 243, 210)" : "";
+            index++;
+
+        <tr style="@style">
+            <td>@index</td>
+            <td><a href="https://smartstaff.simbirsoft1.com/pages/employee/view.xhtml?id=@row.Id" target="_blank">@row.FullName</a></td>
+            <td>@row.Birthday?.ToString("dd.MM.yyyy")</td>
+            <td>@row.FirstWorkingDate.ToString("dd.MM.yyyy")</td>
+            <td>@row.Position</td>
+            <td>@row.Direction</td>
+            <td>@row.Phones</td>
+        </tr>
+            
+        }
+
+    </table>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        LoadSelectFromLocalStorage("staffStatusId", "1");
+        LoadSelectFromLocalStorage("directionId", "0");
+        LoadSelectFromLocalStorage("staffArivedStatusId", "0");
+        
+    });
+    function submitForm() {
+        SaveSelectToLocalStorage("staffStatusId");
+        SaveSelectToLocalStorage("directionId");
+        SaveSelectToLocalStorage("staffArivedStatusId");
+    }
+    function SaveSelectToLocalStorage(selectId) {
+        var select = document.getElementById(selectId);
+        var value = select.options[select.selectedIndex].value;
+        localStorage.setItem(selectId, value);
+    }
+    function LoadSelectFromLocalStorage(selectId, defaultValue) {
+        var item = localStorage.getItem(selectId);
+        var select = document.getElementById(selectId);
+        if (item != null) {
+            select.value = item;
+        } else {
+            select.value = defaultValue;
+        }
+    }
+
+</script>
