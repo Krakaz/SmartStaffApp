@@ -93,6 +93,9 @@ namespace DataLoader.Maketalents.Services.Implementation
             using var responseStream = await response.Content.ReadAsStreamAsync();
             var requestResult = await JsonSerializer.DeserializeAsync<IList<SourceStaff>>(responseStream);
 
+
+            var positions = requestResult.Select(el => el.positions.First()).ToList().Distinct();
+
             var resultList = requestResult.Where(x => x.city == "Краснодар").ToList();
 
 
