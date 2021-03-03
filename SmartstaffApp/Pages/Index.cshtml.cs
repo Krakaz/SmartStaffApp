@@ -25,11 +25,13 @@ namespace SmartstaffApp.Pages
 
         private readonly ILogger<IndexModel> _logger;
         private readonly IStaffService staffService;
+        private readonly DataLoader.Maketalents.Services.IMaketalentsService maketalentsService;
 
-        public IndexModel(ILogger<IndexModel> logger, IStaffService staffService)
+        public IndexModel(ILogger<IndexModel> logger, IStaffService staffService, DataLoader.Maketalents.Services.IMaketalentsService maketalentsService)
         {
             _logger = logger;
             this.staffService = staffService;
+            this.maketalentsService = maketalentsService;
         }
 
 
@@ -44,6 +46,21 @@ namespace SmartstaffApp.Pages
         {
             this.CurrentData = await this.staffService.GetCurrentDataAsync(CancellationToken.None);
             
+        }
+        public async Task OnPostUpdateInterview(CancellationToken cancellationToken)
+        {
+            var year = DateTime.Now.Year;
+            await this.maketalentsService.LoadIntervievInformationAsync(year, cancellationToken);
+            this.CurrentData = await this.staffService.GetCurrentDataAsync(cancellationToken);
+            this.InformationByMonth = await this.staffService.GetInformationByMonthAsync(year, cancellationToken);
+        }
+        public async Task OnPostUpdateStaff(CancellationToken cancellationToken)
+        {
+            var year = DateTime.Now.Year;
+            await this.maketalentsService.LoadNewStaffAsync(cancellationToken);            
+            await this.maketalentsService.UpdateFiredStaffAsync(year, cancellationToken);
+            this.CurrentData = await this.staffService.GetCurrentDataAsync(cancellationToken);
+            this.InformationByMonth = await this.staffService.GetInformationByMonthAsync(year, cancellationToken);
         }
     }
 }

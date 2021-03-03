@@ -32,6 +32,7 @@ namespace SmartstaffApp
             services.AddDataLoaderCollection();
 
             services.AddScoped<IStaffService, StaffService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
 
             services.AddSwaggerGen();
             services.AddHttpClient();

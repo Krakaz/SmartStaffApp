@@ -11,8 +11,9 @@ namespace Repo.Models
         public DbSet<Interview> Interviews { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<Group> Groups { get; set; }
-
+        public DbSet<Value> Values { get; set; }
         public DbSet<Staff> Staffs { get; set; }
+        public DbSet<Employee> Employees { get; set; }
 
         public RepoContext(DbContextOptions<RepoContext> options)
             : base(options)

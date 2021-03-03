@@ -101,10 +101,11 @@ namespace DataLoader.Maketalents.Services.Implementation
 
             foreach (var sourceStaff in resultList)
             {
+
                 var dtoStaff = new Repo.Models.Staff
                 {
                     Id = sourceStaff.id,
-                    Birthday = DateTime.Parse(sourceStaff.birthday),
+                    Birthday = string.IsNullOrEmpty(sourceStaff.birthday) ? (DateTime?)null : DateTime.Parse(sourceStaff.birthday),
                     Email = sourceStaff.email,
                     Female = sourceStaff.female,
                     FirstName = sourceStaff.firstName,

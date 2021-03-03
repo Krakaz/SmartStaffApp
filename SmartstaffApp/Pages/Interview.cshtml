@@ -7,21 +7,22 @@
 
 <h1>Сводка по найму</h1>
 
-<table border="1">
-    <tr>
-        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Месяц</td>
-        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Направление</td>
-        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Должность</td>
-        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Нанято</td>
-        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Приехало</td>
-        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Уволено</td>
-        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Итоговый прирост</td>
-        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Проведено интервью</td>
-        <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Результативность</td>
+<table class="table table-striped"  style="font-size: 12px;">
+    <tr class="table-primary" style="font-weight: bold;">
+        <td>Месяц</td>
+        <td>Направление</td>
+        <td>Должность</td>
+        <td>Нанято</td>
+        <td>Приехало</td>
+        <td>Уволено</td>
+        <td>Итоговый прирост</td>
+        <td>Проведено интервью</td>
+        <td>Результативность</td>
     </tr>
     @foreach (var row in @Model.DetailInformationByMonth)
     {
-        <tr>
+        var cl = string.IsNullOrEmpty(row.ParentPosition) ? "class=table-warning" : "";
+        <tr @cl>
             <td>@row.MonthName</td>
             <td>@row.ParentPosition</td>
             <td>@row.Position</td>

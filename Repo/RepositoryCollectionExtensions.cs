@@ -15,6 +15,7 @@ namespace Repo
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IStaffService, StaffService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
 
             return services;
         }

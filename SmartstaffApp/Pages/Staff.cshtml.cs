@@ -32,12 +32,6 @@ namespace SmartstaffApp.Pages
         {
             await this.FillDirectionsAsync(cancellationToken);
             await this.FillFilteredStaffs(filter, cancellationToken);
-
-            this.Staffs.GroupBy(el => el.Direction).Select(cl => new 
-            {
-                Direction = cl.First().Direction,
-                Count = cl.Count()
-            }).ToList();
         }
 
         private async Task FillDirectionsAsync(CancellationToken cancellationToken)

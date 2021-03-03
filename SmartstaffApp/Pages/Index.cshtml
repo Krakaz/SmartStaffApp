@@ -5,14 +5,19 @@
 }
 
 @{
+    <div class="btn-group">
+        <form method="post" asp-page-handler="updateInterview"><button class="btn btn-primary btn-sm" style="margin-left: 10px;">Итнервью</button></form>
+        <form method="post" asp-page-handler="updateStaff"><button class="btn btn-primary btn-sm" style="margin-left: 10px;">Сотрудники</button></form>
+    </div>
+
     <p><h3>Текущее состояние</h3></p>
 
-    <table border="1">
-        <tr>
-            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Кол-во сотрудников</td>
-            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Рубеж 1</td>
-            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Рубеж 2</td>
-            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Целевое</td>
+    <table class="table table-striped">
+        <tr class="table-primary" style="font-weight: bold;">
+            <td>Кол-во сотрудников</td>
+            <td>Рубеж 1</td>
+            <td>Рубеж 2</td>
+            <td>Целевое</td>
         </tr>
         <tr>
             <td>@Model.CurrentData.CurrentCount</td>
@@ -30,15 +35,15 @@
     <br>
     <br>
     <p><h3>Сводка по месяцам</h3></p>
-    <table border="1">
-        <tr>
-            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Месяц</td>
-            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Нанято</td>
-            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Приехало</td>
-            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Уволено</td>
-            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Итоговый прирост</td>
-            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Проведено интервью</td>
-            <td style="font-weight: bold; background-color: RGB(201, 218, 248); white-space: pre-wrap;">Результативность</td>
+    <table  class="table table-striped">
+        <tr class="table-primary" style="font-weight: bold;">
+            <td>Месяц</td>
+            <td>Нанято</td>
+            <td>Приехало</td>
+            <td>Уволено</td>
+            <td>Итоговый прирост</td>
+            <td>Проведено интервью</td>
+            <td>Результативность</td>
         </tr>
         @foreach (var row in @Model.InformationByMonth)
         {

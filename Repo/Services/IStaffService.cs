@@ -31,7 +31,7 @@ namespace Repo.Services
         Task<Staff> UpdateAsync(Staff staff, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Получает суммарную информацию по месяцам
+        /// Получает информацию по сотрудникам
         /// </summary>
         Task<IList<Staff>> GetAllAsync(CancellationToken cancellationToken);
     }

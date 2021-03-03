@@ -1,5 +1,5 @@
 ﻿@page
-@model StaffModel
+@model EmployeeModel
 @{
     ViewData["Title"] = "Staff";
     Layout = "~/Pages/Shared/_Layout.cshtml";
@@ -10,18 +10,18 @@
     @{
         <table class="table table-striped">
             <tr class="table-warning" style="font-weight: bold;">
-                @foreach (var item in Model.ShortActiveStaffs)
+                @foreach (var item in Model.ShortActiveEmployees)
                 {
-                <td>@item.DirectionName</td>
+                <td>@item.PositionName</td>
                 }
                 <td>Всего</td>
             </tr>
             <tr>
-                @foreach (var item in Model.ShortActiveStaffs)
+                @foreach (var item in Model.ShortActiveEmployees)
                 {
                 <td>@item.StaffCount</td>
                 }
-                <td sstyle="font-weight: bold;">@Model.ShortActiveStaffs.Sum(el => el.StaffCount)</td>
+                <td style="font-weight: bold;">@Model.ShortActiveEmployees.Sum(el => el.StaffCount)</td>
             </tr>
         </table>
     }
@@ -42,9 +42,6 @@
         <option value="2">Понаехавшие</option>
     </select>
 
-    <label for="directionId" style="margin-left: 10px;">Направление</label>
-    <select name="directionId" id="directionId" asp-items="Model.Directions"></select>
-
     <input type="submit" style="float: right">
 </form>
 <br />
@@ -55,26 +52,34 @@
         <tr class="table-primary" style="font-weight: bold;">
             <td>№</td>
             <td>ФИО</td>
-            <td>День рождения</td>
             <td>Первый рабочий день</td>
             <td>Должность</td>
-            <td>Направление</td>
             <td>Телефон</td>
+            <td>Кваллификация</td>
+            <td>Значимость</td>
+            <td>ЗП</td>
+            <td>Предполагаемая дата пересмотра</td>
+            <td>Комментарий 1</td>
+            <td>Комментарий 2</td>
         </tr>
-        @foreach (var row in @Model.Staffs)
+        @foreach (var row in @Model.Employees)
         {
-            var cl = (!row.IsActive) ? "class=table-danger" : (row.IsArived) ? "class=table-info" : "";
+            var cl = (!row.IsActive) ? "class=table-danger" : (row.RevisionDate.Subtract(DateTime.Now).Days <= 50) ? "class=table-warning" : "";
             index++;
 
-        <tr @cl>
-            <td>@index</td>
-            <td><a href="https://smartstaff.simbirsoft1.com/pages/employee/view.xhtml?id=@row.Id" target="_blank">@row.FullName</a></td>
-            <td>@row.Birthday?.ToString("dd.MM.yyyy")</td>
-            <td>@row.FirstWorkingDate.ToString("dd.MM.yyyy")</td>
-            <td>@row.Position</td>
-            <td>@row.Direction</td>
-            <td>@row.Phones</td>
-        </tr>
+            <tr @cl>
+                <td>@index</td>
+                <td><a href="https://smartstaff.simbirsoft1.com/pages/employee/view.xhtml?id=@row.Id" target="_blank">@row.FullName</a></td>
+                <td>@row.FirstWorkingDate.ToString("dd.MM.yyyy")</td>
+                <td>@row.Position</td>
+                <td>@row.Phones</td>
+                <td>@row.Quality</td>
+                <td>@row.Values</td>
+                <td>@row.Salary.ToString("C")</td>
+                <td>@row.RevisionDate.ToString("dd.MM.yyyy")</td>
+                <td>@row.Comment</td>
+                <td>@row.Comment2</td>
+            </tr>
             
         }
 
@@ -84,13 +89,11 @@
     document.addEventListener('DOMContentLoaded', function () {
 
         LoadSelectFromLocalStorage("staffStatusId", "1");
-        LoadSelectFromLocalStorage("directionId", "0");
         LoadSelectFromLocalStorage("staffArivedStatusId", "0");
         
     });
     function submitForm() {
         SaveSelectToLocalStorage("staffStatusId");
-        SaveSelectToLocalStorage("directionId");
         SaveSelectToLocalStorage("staffArivedStatusId");
     }
     function SaveSelectToLocalStorage(selectId) {
