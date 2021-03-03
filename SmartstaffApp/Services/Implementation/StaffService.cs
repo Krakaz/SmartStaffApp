@@ -50,7 +50,7 @@ namespace SmartstaffApp.Services.Implementation
                 var info = new InformationByMonth() { Month = month };
                 info.MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
                 info.InterviewCnt = interviews.Where(el => el.Month == (Repo.Models.Month)info.Month).Sum(el => el.InterviewCount);
-                info.IncomingCnt = staffs.Where(el => el.FirstWorkingDate.Month == month && el.FirstWorkingDate.Year == year).Count();
+                info.IncomingCnt = staffs.Where(el => el.FirstWorkingDate.Month == month && el.FirstWorkingDate.Year == year && !el.IsArived).Count();
                 info.FiredCnt = staffs.Where(el => el.NotActiveDate?.Month == month && el.NotActiveDate?.Year == year).Count();
                 info.ArivedCnt = staffs.Where(el => el.ArivedDate?.Month == month && el.ArivedDate?.Year == year).Count();
 
@@ -92,7 +92,7 @@ namespace SmartstaffApp.Services.Implementation
                         var info = new DetailInformationByMonth() { Month = month, ParentPosition = pposition.Name, Position = position.Name };
                         info.MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
                         info.InterviewCnt = interviews.Where(el => el.Month == (Repo.Models.Month)info.Month && el.PositionName == position.Name).Sum(el => el.InterviewCount);
-                        info.IncomingCnt = staffs.Where(el => el.FirstWorkingDate.Month == month && el.FirstWorkingDate.Year == year && el.Positions.Any(pos => pos.Id == position.Id)).Count();
+                        info.IncomingCnt = staffs.Where(el => el.FirstWorkingDate.Month == month && el.FirstWorkingDate.Year == year && el.Positions.Any(pos => pos.Id == position.Id) && !el.IsArived).Count();
                         info.FiredCnt = staffs.Where(el => el.NotActiveDate?.Month == month && el.NotActiveDate?.Year == year && el.Positions.Any(pos => pos.Id == position.Id)).Count();
                         info.ArivedCnt = staffs.Where(el => el.ArivedDate?.Month == month && el.ArivedDate?.Year == year && el.Positions.Any(pos => pos.Id == position.Id)).Count();
                         result.Add(info);
