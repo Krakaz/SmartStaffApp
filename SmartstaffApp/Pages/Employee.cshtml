@@ -27,6 +27,11 @@
     }
 </div>
 <br />
+<form action="https://jira.simbirsoft.com/secure/RapidBoard.jspa?rapidView=441&selectedIssue=BACK-1689" target="_blank">
+    <button class="btn btn-primary btn-sm" style="margin-left: 10px;">Jira</button>
+</form>
+
+<br />
 <form method="get" onsubmit="submitForm()">
     <label for="staffStatus" style="margin-left: 10px;">Статус</label>
     <select name="staffStatus" id="staffStatusId">
@@ -52,6 +57,7 @@
         <tr class="table-primary" style="font-weight: bold;">
             <td>№</td>
             <td>ФИО</td>
+            <td>MyTeam</td>
             <td>Первый рабочий день</td>
             <td>Должность</td>
             <td>Телефон</td>
@@ -70,6 +76,7 @@
             <tr @cl>
                 <td>@index</td>
                 <td><a href="https://smartstaff.simbirsoft1.com/pages/employee/view.xhtml?id=@row.Id" target="_blank">@row.FullName</a></td>
+                <td><a href="https://u.myteam.simbirsoft.com/profile/@row.Email" target="_blank">MyTeam</a></td>
                 <td>@row.FirstWorkingDate.ToString("dd.MM.yyyy")</td>
                 <td>@row.Position</td>
                 <td>@row.Phones</td>
