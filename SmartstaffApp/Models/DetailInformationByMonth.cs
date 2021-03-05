@@ -1,4 +1,6 @@
-﻿namespace SmartstaffApp.Models
+﻿using System.Collections.Generic;
+
+namespace SmartstaffApp.Models
 {
     /// <summary>
     /// Детальная информация по месяцам
@@ -15,5 +17,10 @@
         /// Наименование позиции
         /// </summary>
         public string Position { get; set; }
+
+
+        public IList<DetailInformationByMonth> Childs { get; set; } = new List<DetailInformationByMonth>();
     }
+
+
 }

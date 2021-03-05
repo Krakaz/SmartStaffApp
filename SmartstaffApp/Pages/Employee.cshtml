@@ -27,10 +27,17 @@
     }
 </div>
 <br />
-<form action="https://jira.simbirsoft.com/secure/RapidBoard.jspa?rapidView=441&selectedIssue=BACK-1689" target="_blank">
-    <button class="btn btn-primary btn-sm" style="margin-left: 10px;">Jira</button>
-</form>
-
+<div style="margin-bottom: 10px;">
+    <form action="https://jira.simbirsoft.com/secure/RapidBoard.jspa?rapidView=441&selectedIssue=BACK-1689" target="_blank" style="display: inline-block;">
+        <button class="btn btn-primary btn-sm" style="margin-left: 10px;">Jira Сотрудники</button>
+    </form>
+    <form action="https://jira.simbirsoft.com/secure/RapidBoard.jspa?rapidView=442&quickFilter=1792&quickFilter=1637&quickFilter=1664" target="_blank" style="display: inline-block;">
+        <button class="btn btn-primary btn-sm" style="margin-left: 10px;">Jira Потребности</button>
+    </form>
+    <form action="https://simstat.simbirsoft/commload/employee" target="_blank" style="display: inline-block;">
+        <button class="btn btn-primary btn-sm" style="margin-left: 10px;">КЗ сотрудников</button>
+    </form>
+</div>
 <br />
 <form method="get" onsubmit="submitForm()">
     <label for="staffStatus" style="margin-left: 10px;">Статус</label>
@@ -73,21 +80,21 @@
             var cl = (!row.IsActive) ? "class=table-danger" : (row.RevisionDate.Subtract(DateTime.Now).Days <= 50) ? "class=table-warning" : "";
             index++;
 
-            <tr @cl>
-                <td>@index</td>
-                <td><a href="https://smartstaff.simbirsoft1.com/pages/employee/view.xhtml?id=@row.Id" target="_blank">@row.FullName</a></td>
-                <td><a href="https://u.myteam.simbirsoft.com/profile/@row.Email" target="_blank">MyTeam</a></td>
-                <td>@row.FirstWorkingDate.ToString("dd.MM.yyyy")</td>
-                <td>@row.Position</td>
-                <td>@row.Phones</td>
-                <td>@row.Quality</td>
-                <td>@row.Values</td>
-                <td>@row.Salary.ToString("C")</td>
-                <td>@row.RevisionDate.ToString("dd.MM.yyyy")</td>
-                <td>@row.Comment</td>
-                <td>@row.Comment2</td>
-            </tr>
-            
+        <tr @cl>
+            <td>@index</td>
+            <td><a href="https://smartstaff.simbirsoft1.com/pages/employee/view.xhtml?id=@row.Id" target="_blank">@row.FullName</a></td>
+            <td><a href="https://u.myteam.simbirsoft.com/profile/@row.Email" target="_blank">MyTeam</a></td>
+            <td>@row.FirstWorkingDate.ToString("dd.MM.yyyy")</td>
+            <td>@row.Position</td>
+            <td>@row.Phones</td>
+            <td>@row.Quality</td>
+            <td>@row.Values</td>
+            <td>@row.Salary.ToString("C")</td>
+            <td>@row.RevisionDate.ToString("dd.MM.yyyy")</td>
+            <td>@row.Comment</td>
+            <td>@row.Comment2</td>
+        </tr>
+
         }
 
     </table>
@@ -97,7 +104,7 @@
 
         LoadSelectFromLocalStorage("staffStatusId", "1");
         LoadSelectFromLocalStorage("staffArivedStatusId", "0");
-        
+
     });
     function submitForm() {
         SaveSelectToLocalStorage("staffStatusId");

@@ -85,6 +85,18 @@ namespace SmartstaffApp.Services.Implementation
 
             for (int month = 1; month <= 12; month++)
             {
+
+                var resultMonthInfo = new DetailInformationByMonth()
+                {
+                    Month = month,
+                    MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month),
+                    IncomingCnt = staffs.Where(el => el.FirstWorkingDate.Month == month && el.FirstWorkingDate.Year == year && !el.IsArived).Count(),
+                    FiredCnt = staffs.Where(el => el.NotActiveDate?.Month == month && el.NotActiveDate?.Year == year).Count(),
+                    ArivedCnt = staffs.Where(el => el.ArivedDate?.Month == month && el.ArivedDate?.Year == year).Count(),
+                    InterviewCnt = interviews.Where(el => el.Month == (Repo.Models.Month)month).Sum(el => el.InterviewCount),
+                };
+                result.Add(resultMonthInfo);
+
                 foreach (var pposition in positions.OrderBy(el => el.Name))
                 {
                     foreach (var position in pposition.Childs.OrderBy(el => el.Name))
@@ -95,19 +107,9 @@ namespace SmartstaffApp.Services.Implementation
                         info.IncomingCnt = staffs.Where(el => el.FirstWorkingDate.Month == month && el.FirstWorkingDate.Year == year && el.Positions.Any(pos => pos.Id == position.Id) && !el.IsArived).Count();
                         info.FiredCnt = staffs.Where(el => el.NotActiveDate?.Month == month && el.NotActiveDate?.Year == year && el.Positions.Any(pos => pos.Id == position.Id)).Count();
                         info.ArivedCnt = staffs.Where(el => el.ArivedDate?.Month == month && el.ArivedDate?.Year == year && el.Positions.Any(pos => pos.Id == position.Id)).Count();
-                        result.Add(info);
+                        resultMonthInfo.Childs.Add(info);
                     }
-                }
-                var resultMonthInfo = new DetailInformationByMonth()
-                {
-                    Month = month,
-                    MonthName = "Итого за месяц",
-                    IncomingCnt = result.Where(el => el.Month == month).Sum(el => el.IncomingCnt),
-                    ArivedCnt = result.Where(el => el.Month == month).Sum(el => el.ArivedCnt),
-                    FiredCnt = result.Where(el => el.Month == month).Sum(el => el.FiredCnt),
-                    InterviewCnt = result.Where(el => el.Month == month).Sum(el => el.InterviewCnt),
-                };
-                result.Add(resultMonthInfo);
+                }                
             }
 
             var resultInfo = new DetailInformationByMonth()

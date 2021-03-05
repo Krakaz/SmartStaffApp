@@ -3,11 +3,12 @@
 @{
     ViewData["Title"] = "Interview";
     Layout = "~/Pages/Shared/_Layout.cshtml";
+    var ind = 0;
 }
 
 <h1>Сводка по найму</h1>
 
-<table class="table table-striped"  style="font-size: 12px;">
+<table class="table table-striped" style="font-size: 12px;" id="InfoTable">
     <tr class="table-primary" style="font-weight: bold;">
         <td>Месяц</td>
         <td>Направление</td>
@@ -21,11 +22,10 @@
     </tr>
     @foreach (var row in @Model.DetailInformationByMonth)
     {
-        var cl = string.IsNullOrEmpty(row.ParentPosition) ? "class=table-warning" : "";
-        <tr @cl>
+        <tr class="table-info" monthind=@row.Month hiddenprop="true">
             <td>@row.MonthName</td>
-            <td>@row.ParentPosition</td>
-            <td>@row.Position</td>
+            <td></td>
+            <td></td>
             <td>@row.IncomingCnt</td>
             <td>@row.ArivedCnt</td>
             <td>@row.FiredCnt</td>
@@ -33,7 +33,39 @@
             <td>@row.InterviewCnt</td>
             <td>@row.ResultativityCnt %</td>
         </tr>
+
+        var classname = "row" + row.Month.ToString();
+
+        @foreach (var crow in row.Childs)
+        {
+            <tr class=@classname style="display: none;">
+                <td>@crow.MonthName</td>
+                <td>@crow.ParentPosition</td>
+                <td>@crow.Position</td>
+                <td>@crow.IncomingCnt</td>
+                <td>@crow.ArivedCnt</td>
+                <td>@crow.FiredCnt</td>
+                <td>@crow.CulculateCount</td>
+                <td>@crow.InterviewCnt</td>
+                <td>@crow.ResultativityCnt %</td>
+            </tr>
+        }
     }
 
 </table>
 
+<script>
+    $(".table-info").on("click", function () {
+        var monrhInd = $(this).attr("monthind");
+        var hiddenprop = $(this).attr("hiddenprop");
+        if (hiddenprop === "true") {
+            $(".row" + monrhInd).show();
+            $(this).attr("hiddenprop", "false");
+        } else {
+            $(".row" + monrhInd).hide();
+            $(this).attr("hiddenprop", "true");
+        }
+        
+    });
+
+</script>
