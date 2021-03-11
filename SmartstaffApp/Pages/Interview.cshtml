@@ -3,11 +3,19 @@
 @{
     ViewData["Title"] = "Interview";
     Layout = "~/Pages/Shared/_Layout.cshtml";
-    var ind = 0;
 }
 
 <h1>Сводка по найму</h1>
-
+<br />
+<form method="get" onsubmit="submitForm()">
+    @*<label for="" style="margin-left: 10px;"></label>*@
+    <select name="isSignificant" id="isSignificantId" onchange="this.form.submit()">
+        <option value="0">Все</option>
+        <option value="1">Значимые</option>
+    </select>
+    <input type="submit" style="float: right">
+</form>
+<br />
 <table class="table table-striped" style="font-size: 12px;" id="InfoTable">
     <tr class="table-primary" style="font-weight: bold;">
         <td>Месяц</td>
@@ -65,7 +73,13 @@
             $(".row" + monrhInd).hide();
             $(this).attr("hiddenprop", "true");
         }
-        
     });
-
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        LoadSelectFromLocalStorage("isSignificantId", "1");
+    });
+    function submitForm() {
+        SaveSelectToLocalStorage("isSignificantId");
+    }
 </script>

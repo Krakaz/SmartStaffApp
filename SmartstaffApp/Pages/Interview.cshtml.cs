@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -21,10 +22,11 @@ namespace SmartstaffApp.Pages
             this.logger = logger;
             this.staffService = staffService;
         }
-        public async Task OnGet(CancellationToken cancellationToken)
+        public async Task OnGet(int isSignificant, CancellationToken cancellationToken)
         {
             var year = DateTime.Now.Year;
-            this.DetailInformationByMonth = await this.staffService.GetDetailInformationByMonthAsync(year, cancellationToken);
+            var result = await this.staffService.GetDetailInformationByMonthAsync(Convert.ToBoolean(isSignificant), year, cancellationToken);
+            this.DetailInformationByMonth = result;
         }
     }
 }

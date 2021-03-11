@@ -17,7 +17,7 @@ namespace SmartstaffApp.Services
         /// <summary>
         /// Получает сводную информацию по найму сотрудников по месяцам за выбранный год с делением на позиции
         /// </summary>
-        Task<IList<DetailInformationByMonth>> GetDetailInformationByMonthAsync(int year, CancellationToken cancellationToken);
+        Task<IList<DetailInformationByMonth>> GetDetailInformationByMonthAsync(bool isShortView, int year, CancellationToken cancellationToken);
 
 
         /// <summary>

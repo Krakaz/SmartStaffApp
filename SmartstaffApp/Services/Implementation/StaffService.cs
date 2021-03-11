@@ -75,7 +75,7 @@ namespace SmartstaffApp.Services.Implementation
             return result.OrderBy(el => el.Month).ToList();
         }
 
-        public async Task<IList<DetailInformationByMonth>> GetDetailInformationByMonthAsync(int year, CancellationToken cancellationToken)
+        public async Task<IList<DetailInformationByMonth>> GetDetailInformationByMonthAsync(bool isShortView, int year, CancellationToken cancellationToken)
         {
             var result = new List<DetailInformationByMonth>();
 
@@ -95,6 +95,12 @@ namespace SmartstaffApp.Services.Implementation
                     ArivedCnt = staffs.Where(el => el.ArivedDate?.Month == month && el.ArivedDate?.Year == year).Count(),
                     InterviewCnt = interviews.Where(el => el.Month == (Repo.Models.Month)month).Sum(el => el.InterviewCount),
                 };
+
+                if(isShortView && (resultMonthInfo.IncomingCnt == 0 && resultMonthInfo.InterviewCnt == 0 && resultMonthInfo.ArivedCnt == 0 && resultMonthInfo.FiredCnt == 0))
+                {
+                    continue;
+                }
+
                 result.Add(resultMonthInfo);
 
                 foreach (var pposition in positions.OrderBy(el => el.Name))
@@ -107,6 +113,10 @@ namespace SmartstaffApp.Services.Implementation
                         info.IncomingCnt = staffs.Where(el => el.FirstWorkingDate.Month == month && el.FirstWorkingDate.Year == year && el.Positions.Any(pos => pos.Id == position.Id) && !el.IsArived).Count();
                         info.FiredCnt = staffs.Where(el => el.NotActiveDate?.Month == month && el.NotActiveDate?.Year == year && el.Positions.Any(pos => pos.Id == position.Id)).Count();
                         info.ArivedCnt = staffs.Where(el => el.ArivedDate?.Month == month && el.ArivedDate?.Year == year && el.Positions.Any(pos => pos.Id == position.Id)).Count();
+                        if (isShortView && (info.IncomingCnt == 0 && info.InterviewCnt == 0 && info.ArivedCnt == 0 && info.FiredCnt == 0))
+                        {
+                            continue;
+                        }
                         resultMonthInfo.Childs.Add(info);
                     }
                 }                
