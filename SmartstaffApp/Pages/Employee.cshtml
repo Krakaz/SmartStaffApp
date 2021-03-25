@@ -12,14 +12,14 @@
             <tr class="table-warning" style="font-weight: bold;">
                 @foreach (var item in Model.ShortActiveEmployees)
                 {
-                <td>@item.PositionName</td>
+                    <td>@item.PositionName</td>
                 }
                 <td>Всего</td>
             </tr>
             <tr>
                 @foreach (var item in Model.ShortActiveEmployees)
                 {
-                <td>@item.StaffCount</td>
+                    <td>@item.StaffCount</td>
                 }
                 <td style="font-weight: bold;">@Model.ShortActiveEmployees.Sum(el => el.StaffCount)</td>
             </tr>
@@ -41,88 +41,70 @@
 <br />
 <form method="get" onsubmit="submitForm()">
     <label for="staffStatus" style="margin-left: 10px;">Статус</label>
-    <select name="staffStatus" id="staffStatusId">
-        <option value="0">Все</option>
-        <option value="1">Активные</option>
-        <option value="2">Уволенные</option>
-    </select>
+    @Html.DropDownListFor(m => m.Filter.StaffStatusId, Model.StaffStatus, new { id = "staffStatusId", onChange = "this.form.submit()" })
 
     <label for="staffArivedStatus" style="margin-left: 10px;">Статус прибытия</label>
-    <select name="staffArivedStatus" id="staffArivedStatusId">
-        <option value="0">Все</option>
-        <option value="1">Нанятые в Краснодаре</option>
-        <option value="2">Понаехавшие</option>
-    </select>
+    @Html.DropDownListFor(m => m.Filter.StaffArivedStatusId, Model.StaffArivedStatus, new { id = "staffArivedStatusId", onChange = "this.form.submit()" })
 
-    <input type="submit" style="float: right">
+    <br />
+
+
+    <div>
+        @{ var index = 0;}
+        <table class="table table-striped" style="font-size: 12px;">
+            <tr class="table-primary" style="font-weight: bold;">
+                <td>№</td>
+                <td>
+                    <button type="submit" name="Filter.SortOrder" value=@Model.Sort.FullName class="btn btn-link">ФИО</button>
+                </td>
+                <td>MyTeam</td>
+                <td>
+                    <button type="submit" name="Filter.SortOrder" value=@Model.Sort.FirstWorkingDate class="btn btn-link">Первый рабочий день</button>
+                </td>
+                <td>
+                    <button type="submit" name="Filter.SortOrder" value=@Model.Sort.Position class="btn btn-link">Должность</button>
+                </td>
+                <td>
+                    <button type="submit" name="Filter.SortOrder" value=@Model.Sort.Phones class="btn btn-link">Телефон</button>
+                </td>
+                <td>
+                    <button type="submit" name="Filter.SortOrder" value=@Model.Sort.Quality class="btn btn-link">Кваллификация</button>
+                </td>
+                <td>
+                    <button type="submit" name="Filter.SortOrder" value=@Model.Sort.Values class="btn btn-link">Значимость</button>
+                </td>
+                <td>
+                    <button type="submit" name="Filter.SortOrder" value=@Model.Sort.Salary class="btn btn-link">ЗП</button>
+                </td>
+                <td>
+                    <button type="submit" name="Filter.SortOrder" value=@Model.Sort.RevisionDate class="btn btn-link">Предполагаемая дата пересмотра</button>
+                </td>
+                <td>Комментарий 1</td>
+                <td>Комментарий 2</td>
+            </tr>
+            @foreach (var row in @Model.Employees)
+            {
+                var cl = (!row.IsActive) ? "class=table-danger" : (row.RevisionDate.Subtract(DateTime.Now).Days <= 50) ? "class=table-warning" : "";
+                index++;
+
+                <tr @cl>
+                    <td>@index</td>
+                    <td><a href="https://smartstaff.simbirsoft1.com/pages/employee/view.xhtml?id=@row.Id" target="_blank">@row.FullName</a></td>
+                    <td><a href="https://u.myteam.simbirsoft.com/profile/@row.Email" target="_blank">MyTeam</a></td>
+                    <td>@row.FirstWorkingDate.ToString("dd.MM.yyyy")</td>
+                    <td>@row.Position</td>
+                    <td>@row.Phones</td>
+                    <td>@row.Quality</td>
+                    <td>@row.Values</td>
+                    <td>@row.Salary.ToString("C")</td>
+                    <td>@row.RevisionDate.ToString("dd.MM.yyyy")</td>
+                    <td>@row.Comment</td>
+                    <td>@row.Comment2</td>
+                </tr>
+
+            }
+
+        </table>
+    </div>
 </form>
 <br />
-
-<div>
-    @{ var index = 0;}
-    <table class="table table-striped" style="font-size: 12px;">
-        <tr class="table-primary" style="font-weight: bold;">
-            <td>№</td>
-            <td>ФИО</td>
-            <td>MyTeam</td>
-            <td>Первый рабочий день</td>
-            <td>Должность</td>
-            <td>Телефон</td>
-            <td>Кваллификация</td>
-            <td>Значимость</td>
-            <td>ЗП</td>
-            <td>Предполагаемая дата пересмотра</td>
-            <td>Комментарий 1</td>
-            <td>Комментарий 2</td>
-        </tr>
-        @foreach (var row in @Model.Employees)
-        {
-            var cl = (!row.IsActive) ? "class=table-danger" : (row.RevisionDate.Subtract(DateTime.Now).Days <= 50) ? "class=table-warning" : "";
-            index++;
-
-        <tr @cl>
-            <td>@index</td>
-            <td><a href="https://smartstaff.simbirsoft1.com/pages/employee/view.xhtml?id=@row.Id" target="_blank">@row.FullName</a></td>
-            <td><a href="https://u.myteam.simbirsoft.com/profile/@row.Email" target="_blank">MyTeam</a></td>
-            <td>@row.FirstWorkingDate.ToString("dd.MM.yyyy")</td>
-            <td>@row.Position</td>
-            <td>@row.Phones</td>
-            <td>@row.Quality</td>
-            <td>@row.Values</td>
-            <td>@row.Salary.ToString("C")</td>
-            <td>@row.RevisionDate.ToString("dd.MM.yyyy")</td>
-            <td>@row.Comment</td>
-            <td>@row.Comment2</td>
-        </tr>
-
-        }
-
-    </table>
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-
-        LoadSelectFromLocalStorage("staffStatusId", "1");
-        LoadSelectFromLocalStorage("staffArivedStatusId", "0");
-
-    });
-    function submitForm() {
-        SaveSelectToLocalStorage("staffStatusId");
-        SaveSelectToLocalStorage("staffArivedStatusId");
-    }
-    function SaveSelectToLocalStorage(selectId) {
-        var select = document.getElementById(selectId);
-        var value = select.options[select.selectedIndex].value;
-        localStorage.setItem(selectId, value);
-    }
-    function LoadSelectFromLocalStorage(selectId, defaultValue) {
-        var item = localStorage.getItem(selectId);
-        var select = document.getElementById(selectId);
-        if (item != null) {
-            select.value = item;
-        } else {
-            select.value = defaultValue;
-        }
-    }
-
-</script>

@@ -45,28 +45,26 @@
         <table class="table table-striped" style="font-size: 12px;">
             <tr class="table-primary" style="font-weight: bold;">
                 <td>№</td>
-                <td>                    
-                    <button type="submit" name="Filter.SortOrder" value=@Model.Sort.Name class="btn btn-link">ФИО</button>
+                <td>
+                    <button type="submit" name="Filter.SortOrder" value=@Model.Sort.FullName class="btn btn-link">ФИО</button>
                 </td>
                 <td>
                     <button type="submit" name="Filter.SortOrder" value=@Model.Sort.Birthday class="btn btn-link">День рождения</button>
-                    @*<a asp-page="./Staff" asp-route-sortOrder=@Model.Sort.Birthday>День рождения</a>*@
                 </td>
                 <td>
                     <button type="submit" name="Filter.SortOrder" value=@Model.Sort.FirstWorkingDate class="btn btn-link">Первый рабочий день</button>
-                    @*<a asp-page="./Staff" asp-route-sortOrder=@Model.Sort.FirstWorkingDate>Первый рабочий день</a>*@
+                </td>
+                <td>
+                    <button type="submit" name="Filter.SortOrder" value=@Model.Sort.NotActiveDate class="btn btn-link">Последний рабочий день</button>
                 </td>
                 <td>
                     <button type="submit" name="Filter.SortOrder" value=@Model.Sort.Position class="btn btn-link">Должность</button>
-                    @*<a asp-page="./Staff" asp-route-sortOrder=@Model.Sort.Position>Должность</a>*@
                 </td>
                 <td>
                     <button type="submit" name="Filter.SortOrder" value=@Model.Sort.Direction class="btn btn-link">Направление</button>
-                    @*<a asp-page="./Staff" asp-route-sortOrder=@Model.Sort.Direction>Направление</a>*@
                 </td>
                 <td>
-                    <button type="submit" name="Filter.SortOrder" value=@Model.Sort.Phone class="btn btn-link">Телефон</button>
-                    @*<a asp-page="./Staff" asp-route-sortOrder=@Model.Sort.Phone>Телефон</a>*@
+                    <button type="submit" name="Filter.SortOrder" value=@Model.Sort.Phones class="btn btn-link">Телефон</button>
                 </td>
             </tr>
             @foreach (var row in @Model.Staffs)
@@ -74,34 +72,19 @@
             var cl = (!row.IsActive) ? "class=table-danger" : (row.IsArived) ? "class=table-info" : "";
             index++;
 
-            <tr @cl>
-                <td>@index</td>
-                <td><a href="https://smartstaff.simbirsoft1.com/pages/employee/view.xhtml?id=@row.Id" target="_blank">@row.FullName</a></td>
-                <td>@row.Birthday?.ToString("dd.MM.yyyy")</td>
-                <td>@row.FirstWorkingDate.ToString("dd.MM.yyyy")</td>
-                <td>@row.Position</td>
-                <td>@row.Direction</td>
-                <td>@row.Phones</td>
-            </tr>
+        <tr @cl>
+            <td>@index</td>
+            <td><a href="https://smartstaff.simbirsoft1.com/pages/employee/view.xhtml?id=@row.Id" target="_blank">@row.FullName</a></td>
+            <td>@row.Birthday?.ToString("dd.MM.yyyy")</td>
+            <td>@row.FirstWorkingDate.ToString("dd.MM.yyyy")</td>
+            <td>@row.NotActiveDate?.ToString("dd.MM.yyyy")</td>
+            <td>@row.Position</td>
+            <td>@row.Direction</td>
+            <td>@row.Phones</td>
+        </tr>
 
         }
 
         </table>
     </div>
 </form>
-<script>
-    //document.addEventListener('DOMContentLoaded', function () {
-
-    //    LoadSelectFromLocalStorage("staffStatusId", "1");
-    //    LoadSelectFromLocalStorage("directionId", "0");
-    //    LoadSelectFromLocalStorage("staffArivedStatusId", "0");
-        
-    //});
-    //function submitForm() {
-    //    SaveSelectToLocalStorage("staffStatusId");
-    //    SaveSelectToLocalStorage("directionId");
-    //    SaveSelectToLocalStorage("staffArivedStatusId");
-    //}
-
-
-</script>

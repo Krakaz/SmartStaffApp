@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -44,6 +44,12 @@ namespace SmartstaffApp.Pages
         {
             this.logger = logger;
             this.staffService = staffService;
+
+            Type employeeSortType = typeof(StaffSort);
+            foreach (var f in employeeSortType.GetProperties())
+            {
+                employeeSortType.GetProperty(f.Name).SetValue(this.Sort, f.Name.ToLower());
+            }
         }
 
         public async Task OnGet(StaffFilter filter, CancellationToken cancellationToken)
@@ -55,6 +61,11 @@ namespace SmartstaffApp.Pages
                 {
                     filter = sessionFilter;
                 }                
+            }
+
+            if(string.IsNullOrEmpty(filter.SortOrder) && !string.IsNullOrEmpty(this.Filter.SortOrder))
+            {
+                filter.SortOrder = this.Filter.SortOrder;
             }
 
             this.Filter = filter;
@@ -110,80 +121,30 @@ namespace SmartstaffApp.Pages
 
         private void SortStaffs(string sortOrder)
         {
-            switch (sortOrder)
+            Type employeeSortType = typeof(StaffSort);
+            var isDesc = false;
+            var descStr = "_desc";
+
+            if (!string.IsNullOrEmpty(sortOrder) && sortOrder.IndexOf(descStr) != -1)
             {
-                case "name":
-                    {
-                        this.Staffs = this.Staffs.OrderByDescending(el => el.FullName).ToList();
-                        this.Sort.Name = "name_desc";
-                        break;
-                    }
-                case "name_desc":
-                    {
-                        this.Staffs = this.Staffs.OrderBy(el => el.FullName).ToList();
-                        this.Sort.Name = "name";
-                        break;
-                    }
-                case "birthday":
-                    {
-                        this.Staffs = this.Staffs.OrderByDescending(el => el.Birthday).ToList();
-                        this.Sort.Birthday = "birthday_desc";
-                        break;
-                    }
-                case "birthday_desc":
-                    {
-                        this.Staffs = this.Staffs.OrderBy(el => el.Birthday).ToList();
-                        this.Sort.Birthday = "birthday";
-                        break;
-                    }
-                case "firstWorkingDate":
-                    {
-                        this.Staffs = this.Staffs.OrderByDescending(el => el.FirstWorkingDate).ToList();
-                        this.Sort.FirstWorkingDate = "firstWorkingDate_desc";
-                        break;
-                    }
-                case "firstWorkingDate_desc":
-                    {
-                        this.Staffs = this.Staffs.OrderBy(el => el.FirstWorkingDate).ToList();
-                        this.Sort.FirstWorkingDate = "firstWorkingDate";
-                        break;
-                    }
-                case "position":
-                    {
-                        this.Staffs = this.Staffs.OrderByDescending(el => el.Position).ToList();
-                        this.Sort.Position = "position_desc";
-                        break;
-                    }
-                case "position_desc":
-                    {
-                        this.Staffs = this.Staffs.OrderBy(el => el.Position).ToList();
-                        this.Sort.Position = "position";
-                        break;
-                    }
-                case "direction":
-                    {
-                        this.Staffs = this.Staffs.OrderByDescending(el => el.Direction).ToList();
-                        this.Sort.Direction = "direction_desc";
-                        break;
-                    }
-                case "direction_desc":
-                    {
-                        this.Staffs = this.Staffs.OrderBy(el => el.Direction).ToList();
-                        this.Sort.Direction = "direction";
-                        break;
-                    }
-                case "phone":
-                    {
-                        this.Staffs = this.Staffs.OrderByDescending(el => el.Phones).ToList();
-                        this.Sort.Phone = "phone_desc";
-                        break;
-                    }
-                case "phone_desc":
-                    {
-                        this.Staffs = this.Staffs.OrderBy(el => el.Phones).ToList();
-                        this.Sort.Phone = "phone";
-                        break;
-                    }
+                isDesc = true;
+                sortOrder = sortOrder.Substring(0, sortOrder.IndexOf(descStr));
+            }
+
+            if (!string.IsNullOrEmpty(sortOrder) && employeeSortType.GetProperties().Any(x => x.Name.ToLower() == sortOrder))
+            {
+                var field = employeeSortType.GetProperties().First(x => x.Name.ToLower() == sortOrder);
+                var sortedField = typeof(EmployeeVM).GetField(field.Name, BindingFlags.Public | BindingFlags.Instance);
+                if (!isDesc)
+                {
+                    this.Staffs = this.Staffs.OrderBy(el => el.GetType().GetProperty(field.Name).GetValue(el, null)).ToList();
+                    employeeSortType.GetProperty(field.Name).SetValue(this.Sort, field.Name.ToLower() + descStr);
+                }
+                else
+                {
+                    this.Staffs = this.Staffs.OrderByDescending(el => el.GetType().GetProperty(field.Name).GetValue(el, null)).ToList();
+                    employeeSortType.GetProperty(field.Name).SetValue(this.Sort, field.Name.ToLower());
+                }
             }
         }
     }
@@ -209,16 +170,6 @@ namespace SmartstaffApp.Pages
         public int DirectionId { get; set; }
 
         public string SortOrder { get; set; }
-
-        public static bool Equals(StaffFilter objA, StaffFilter objB)
-        {
-            return objA == objB || 
-                (
-                objA.StaffStatusId == objB.StaffStatusId &&
-                objA.StaffArivedStatusId == objB.StaffArivedStatusId &&
-                objA.DirectionId == objB.DirectionId
-                );
-        }
     }
 
     /// <summary>
@@ -226,11 +177,13 @@ namespace SmartstaffApp.Pages
     /// </summary>
     public class StaffSort
     {
-        public string Name { get; set; } = "name";
-        public string Birthday { get; set; } = "birthday";
-        public string FirstWorkingDate { get; set; } = "firstWorkingDate";
-        public string Position { get; set; } = "position";
-        public string Direction { get; set; } = "direction";
-        public string Phone { get; set; } = "phone";
+        public string FullName { get; set; }
+        public string Birthday { get; set; }
+        public string FirstWorkingDate { get; set; }
+        public string Position { get; set; }
+        public string Direction { get; set; }
+        public string Phones { get; set; }
+        public string NotActiveDate { get; set; }
+
     }
 }
