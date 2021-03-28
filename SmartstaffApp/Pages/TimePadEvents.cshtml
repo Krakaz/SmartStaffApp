@@ -1,0 +1,33 @@
+﻿@page
+@model SmartstaffApp.Pages.TimePadEventsModel
+@{
+    ViewData["Title"] = "TimePadEvents";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>События Тайм пада</h1>
+@{ var index = 1;}
+<table class="table table-striped" style="font-size: 12px;">
+    <tr class="table-primary" style="font-weight: bold;">
+        <td>№</td>
+        <td>Дата</td>
+        <td>Время</td>
+        <td>Наименование</td>
+        <td>Город</td>
+        <td>Адрес</td>
+    </tr>
+    @foreach (var row in @Model.EventList)
+    {
+        <tr>
+            <td>@index</td>
+            <td>@row.Date.ToString("dd.MM.yyyy")</td>
+            <td>@row.Date.ToString("HH:mm")</td>
+            <td><a href=@row.Url target="_blank">@row.Name</a></td>
+            <td>@row.City</td>
+            <td>@row.Address</td>
+        </tr>
+
+        index++;
+    }
+
+</table>
