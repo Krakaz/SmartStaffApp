@@ -12,6 +12,12 @@
 
     <p><h3>Текущее состояние</h3></p>
 
+
+    var firstTargetClass = (Model.CurrentData.FirstTargetDelta <= 0) ? "class=table-success" : "";
+    var secondTargetClass = (Model.CurrentData.SecondTargetCount <= 0) ? "class=table-success" : "";
+    var yearTargetClass = (Model.CurrentData.YearTargetCount <= 0) ? "class=table-success" : "";
+
+
     <table class="table table-striped">
         <tr class="table-primary" style="font-weight: bold;">
             <td>Кол-во сотрудников</td>
@@ -21,15 +27,15 @@
         </tr>
         <tr>
             <td>@Model.CurrentData.CurrentCount</td>
-            <td>@Model.CurrentData.FirstTargetCount</td>
-            <td>@Model.CurrentData.SecondTargetCount</td>
-            <td>@Model.CurrentData.YearTargetCount</td>
+            <td @firstTargetClass>@Model.CurrentData.FirstTargetCount</td>
+            <td @secondTargetClass>@Model.CurrentData.SecondTargetCount</td>
+            <td @yearTargetClass>@Model.CurrentData.YearTargetCount</td>
         </tr>
         <tr>
             <td>Осталось</td>
-            <td>@Model.CurrentData.FirstTargetDelta</td>
-            <td>@Model.CurrentData.SecondTargetDelta</td>
-            <td>@Model.CurrentData.YearTargetDelta</td>
+            <td @firstTargetClass>@Model.CurrentData.FirstTargetDelta</td>
+            <td @secondTargetClass>@Model.CurrentData.SecondTargetDelta</td>
+            <td @yearTargetClass>@Model.CurrentData.YearTargetDelta</td>
         </tr>
     </table>
     <br>
