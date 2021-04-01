@@ -48,14 +48,14 @@
                 <tr class="table-primary" style="font-weight: bold;">
                     @foreach (var item in Model.ShortActiveStaffs)
                     {
-                        <td>@item.DirectionName</td>
+                    <td>@item.DirectionName</td>
                     }
                     <td>Всего</td>
                 </tr>
                 <tr>
                     @foreach (var item in Model.ShortActiveStaffs)
                     {
-                        <td>@item.StaffCount</td>
+                    <td>@item.StaffCount</td>
                     }
                     <td sstyle="font-weight: bold;">@Model.ShortActiveStaffs.Sum(el => el.StaffCount)</td>
                 </tr>
@@ -72,21 +72,28 @@
                     <th>Месяц</th>
                     @foreach (var item in Model.TotalGrowByMonthAndDirection.Header)
                     {
-                        <th>@item.Name</th>
+                    <th>@item.Name</th>
                     }
                     <th>Всего</th>
                 </tr>
 
                 @foreach (var item in Model.TotalGrowByMonthAndDirection.Values)
                 {
-                    <tr>
-                        <td>@item.MonthName</td>
-                        @foreach (var direction in Model.TotalGrowByMonthAndDirection.Header)
+                <tr>
+                    <td>@item.MonthName</td>
+                    @foreach (var direction in Model.TotalGrowByMonthAndDirection.Header)
                         {
-                            <td>@item.TotalGrowByDirection.Where(el => el.DirectionId == direction.Id).FirstOrDefault()?.TotalGrowCount</td>
+                            var value = item.TotalGrowByDirection.Where(el => el.DirectionId == direction.Id).FirstOrDefault()?.TotalGrowCount;
+                            var cellClass = value < 0 ? "class = table-danger" : "";
+
+                            <td @cellClass>@value</td>
                         }
-                        <td sstyle="font-weight: bold;">@item.TotalGrowByDirection.Sum(el => el.TotalGrowCount)</td>
-                    </tr>
+                    @{
+                    var totalValue = item.TotalGrowByDirection.Sum(el => el.TotalGrowCount);
+                    var totalCellClass = totalValue < 0 ? "class = table-danger" : "";
+                    }
+                    <td @totalCellClass style="font-weight: bold;">@totalValue</td>
+                </tr>
                 }
 
 
@@ -109,15 +116,15 @@
         </tr>
         @foreach (var row in @Model.InformationByMonth)
         {
-            <tr>
-                <td>@row.MonthName</td>
-                <td>@row.IncomingCnt</td>
-                <td>@row.ArivedCnt</td>
-                <td>@row.FiredCnt</td>
-                <td>@row.CulculateCount</td>
-                <td>@row.InterviewCnt</td>
-                <td>@row.ResultativityCnt %</td>
-            </tr>
+        <tr>
+            <td>@row.MonthName</td>
+            <td>@row.IncomingCnt</td>
+            <td>@row.ArivedCnt</td>
+            <td>@row.FiredCnt</td>
+            <td>@row.CulculateCount</td>
+            <td>@row.InterviewCnt</td>
+            <td>@row.ResultativityCnt %</td>
+        </tr>
         }
 
     </table>
