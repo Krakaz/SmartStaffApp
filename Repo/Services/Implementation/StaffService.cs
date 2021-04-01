@@ -65,6 +65,17 @@ namespace Repo.Services.Implementation
                 await this.repoContsext.Staffs.AddAsync(staff);
                 await this.repoContsext.SaveChangesAsync();
             }
+            else
+            {
+                if(staffDB.MiddleName != staff.MiddleName)
+                {
+                    staffDB.MiddleName = staff.MiddleName;
+                    staffDB.FullName = staff.FullName;
+                    staffDB.Birthday = staff.Birthday;
+                    this.repoContsext.Staffs.Update(staffDB);
+                    await this.repoContsext.SaveChangesAsync();
+                }
+            }
 
             return staff.Id;
         }
