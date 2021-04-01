@@ -32,13 +32,19 @@ namespace SmartstaffApp.Pages
         public async Task OnGet(InterviewFilter filter, CancellationToken cancellationToken)
         {
             var year = DateTime.Now.Year;
-            var result = await this.staffService.GetDetailInformationByMonthAsync(Convert.ToBoolean(filter.SignificantStatusId), year, cancellationToken);
-            this.DetailInformationByMonth = result;
+            this.DetailInformationByMonth = await this.staffService.GetDetailInformationByMonthAsync(filter.IsShort, filter.IsSignificant, year, cancellationToken);
         }
     }
 
     public class InterviewFilter
     {
-        public int SignificantStatusId { get; set; }
+        /// <summary>
+        /// Показывать только значимые
+        /// </summary>
+        public bool IsSignificant { get; set; }
+        /// <summary>
+        /// Вывод в сокращенном виде
+        /// </summary>
+        public bool IsShort { get; set; }
     }
 }

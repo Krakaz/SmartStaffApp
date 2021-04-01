@@ -75,7 +75,7 @@ namespace SmartstaffApp.Services.Implementation
             return result.OrderBy(el => el.Month).ToList();
         }
 
-        public async Task<IList<DetailInformationByMonth>> GetDetailInformationByMonthAsync(bool isShortView, int year, CancellationToken cancellationToken)
+        public async Task<IList<DetailInformationByMonth>> GetDetailInformationByMonthAsync(bool isShort, bool isSignificant, int year, CancellationToken cancellationToken)
         {
             var result = new List<DetailInformationByMonth>();
 
@@ -96,24 +96,41 @@ namespace SmartstaffApp.Services.Implementation
                     InterviewCnt = interviews.Where(el => el.Month == (Repo.Models.Month)month).Sum(el => el.InterviewCount),
                 };
 
-                if(isShortView && (resultMonthInfo.IncomingCnt == 0 && resultMonthInfo.InterviewCnt == 0 && resultMonthInfo.ArivedCnt == 0 && resultMonthInfo.FiredCnt == 0))
+                if(isSignificant && (resultMonthInfo.IncomingCnt == 0 && resultMonthInfo.InterviewCnt == 0 && resultMonthInfo.ArivedCnt == 0 && resultMonthInfo.FiredCnt == 0))
                 {
                     continue;
                 }
 
                 result.Add(resultMonthInfo);
 
-                foreach (var pposition in positions.OrderBy(el => el.Name))
+                foreach (var pposition in positions.Where(el=> el.Childs.Count != 0).OrderBy(el => el.Name))
                 {
-                    foreach (var position in pposition.Childs.OrderBy(el => el.Name))
+                    if (!isShort)
                     {
-                        var info = new DetailInformationByMonth() { Month = month, ParentPosition = pposition.Name, Position = position.Name };
+                        foreach (var position in pposition.Childs.OrderBy(el => el.Name))
+                        {
+                            var info = new DetailInformationByMonth() { Month = month, ParentPosition = pposition.Name, Position = position.Name };
+                            info.MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+                            info.InterviewCnt = interviews.Where(el => el.Month == (Repo.Models.Month)info.Month && el.PositionName == position.Name).Sum(el => el.InterviewCount);
+                            info.IncomingCnt = staffs.Where(el => el.FirstWorkingDate.Month == month && el.FirstWorkingDate.Year == year && el.Positions.Any(pos => pos.Id == position.Id) && !el.IsArived).Count();
+                            info.FiredCnt = staffs.Where(el => el.NotActiveDate?.Month == month && el.NotActiveDate?.Year == year && el.Positions.Any(pos => pos.Id == position.Id)).Count();
+                            info.ArivedCnt = staffs.Where(el => el.ArivedDate?.Month == month && el.ArivedDate?.Year == year && el.Positions.Any(pos => pos.Id == position.Id)).Count();
+                            if (isSignificant && (info.IncomingCnt == 0 && info.InterviewCnt == 0 && info.ArivedCnt == 0 && info.FiredCnt == 0))
+                            {
+                                continue;
+                            }
+                            resultMonthInfo.Childs.Add(info);
+                        }
+                    }
+                    else
+                    {
+                        var info = new DetailInformationByMonth() { Month = month, ParentPosition = pposition.Name, Position = "" };
                         info.MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
-                        info.InterviewCnt = interviews.Where(el => el.Month == (Repo.Models.Month)info.Month && el.PositionName == position.Name).Sum(el => el.InterviewCount);
-                        info.IncomingCnt = staffs.Where(el => el.FirstWorkingDate.Month == month && el.FirstWorkingDate.Year == year && el.Positions.Any(pos => pos.Id == position.Id) && !el.IsArived).Count();
-                        info.FiredCnt = staffs.Where(el => el.NotActiveDate?.Month == month && el.NotActiveDate?.Year == year && el.Positions.Any(pos => pos.Id == position.Id)).Count();
-                        info.ArivedCnt = staffs.Where(el => el.ArivedDate?.Month == month && el.ArivedDate?.Year == year && el.Positions.Any(pos => pos.Id == position.Id)).Count();
-                        if (isShortView && (info.IncomingCnt == 0 && info.InterviewCnt == 0 && info.ArivedCnt == 0 && info.FiredCnt == 0))
+                        info.InterviewCnt = interviews.Where(el => el.Month == (Repo.Models.Month)info.Month && pposition.Childs.Any(pos => pos.Name == el.PositionName)).Sum(el => el.InterviewCount);
+                        info.IncomingCnt = staffs.Where(el => el.FirstWorkingDate.Month == month && el.FirstWorkingDate.Year == year && el.Positions.Any(pos => pposition.Childs.Any(cpos => cpos.Id == pos.Id)) && !el.IsArived).Count();
+                        info.FiredCnt = staffs.Where(el => el.NotActiveDate?.Month == month && el.NotActiveDate?.Year == year && el.Positions.Any(pos => pposition.Childs.Any(cpos => cpos.Id == pos.Id))).Count();
+                        info.ArivedCnt = staffs.Where(el => el.ArivedDate?.Month == month && el.ArivedDate?.Year == year && el.Positions.Any(pos => pposition.Childs.Any(cpos => cpos.Id == pos.Id))).Count();
+                        if (isSignificant && (info.IncomingCnt == 0 && info.InterviewCnt == 0 && info.ArivedCnt == 0 && info.FiredCnt == 0))
                         {
                             continue;
                         }
@@ -172,6 +189,62 @@ namespace SmartstaffApp.Services.Implementation
         public Task<IList<Repo.Models.Position>> GetPositionsAsync(CancellationToken cancellationToken)
         {
             return this.positionService.GetAllAsync(cancellationToken);
+        }
+
+        public async Task<TotalGrowByMonthAndDirection> GetTotalGrowByMonthAndDirectionAsync(int year, CancellationToken cancellationToken)
+        {
+            var result = new TotalGrowByMonthAndDirection();
+
+            var positions = await this.positionService.GetAllAsync(cancellationToken);
+            foreach(var direction in positions.Where(el => el.Childs.Count != 0).OrderBy(el => el.Name))
+            {
+                result.Header.Add(new DirectionVM { Id = direction.Id, Name = direction.Name });
+            }
+
+            var staffs = await this.repoStaffService.GetAllAsync(cancellationToken);
+            
+
+            for (int month = 1; month <= DateTime.Now.Month; month++)
+            {
+                var monthInfo = new TotalGrowByMonthAndDirectionValues()
+                {
+                    Month = month,
+                    MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month),
+                };
+
+                foreach (var direction in positions.Where(el => el.Childs.Count != 0).OrderBy(el => el.Name))
+                {
+                    var totalGrowByDirection = new TotalGrowByDirection();
+                    totalGrowByDirection.DirectionId = direction.Id;
+                    var shortList = staffs.Where(el => el.Positions.Any(pos => direction.Childs.Any(cpos => cpos.Id == pos.Id)));
+
+                    totalGrowByDirection.TotalGrowCount = 
+                        shortList.Where(el => el.FirstWorkingDate.Month == month && el.FirstWorkingDate.Year == year && !el.IsArived).Count() -
+                        shortList.Where(el => el.NotActiveDate?.Month == month && el.NotActiveDate?.Year == year).Count() +
+                        shortList.Where(el => el.ArivedDate?.Month == month && el.ArivedDate?.Year == year).Count();
+                    monthInfo.TotalGrowByDirection.Add(totalGrowByDirection);
+                }
+
+                result.Values.Add(monthInfo);
+            }
+            var totalMonthInfo = new TotalGrowByMonthAndDirectionValues()
+            {
+                Month = 13,
+                MonthName = "Итого",
+            };
+
+            foreach (var direction in positions.Where(el => el.Childs.Count != 0).OrderBy(el => el.Name))
+            {
+                var totalGrowByDirection = new TotalGrowByDirection();
+                totalGrowByDirection.DirectionId = direction.Id;
+                totalGrowByDirection.TotalGrowCount = result.Values.Sum(el => el.TotalGrowByDirection.Where(x => x.DirectionId == direction.Id).Sum(y => y.TotalGrowCount));
+                totalMonthInfo.TotalGrowByDirection.Add(totalGrowByDirection);
+            }
+
+            result.Values.Add(totalMonthInfo);
+
+
+            return result;
         }
     }
 }

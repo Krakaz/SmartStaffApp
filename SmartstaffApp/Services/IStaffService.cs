@@ -17,8 +17,12 @@ namespace SmartstaffApp.Services
         /// <summary>
         /// Получает сводную информацию по найму сотрудников по месяцам за выбранный год с делением на позиции
         /// </summary>
-        Task<IList<DetailInformationByMonth>> GetDetailInformationByMonthAsync(bool isShortView, int year, CancellationToken cancellationToken);
-
+        Task<IList<DetailInformationByMonth>> GetDetailInformationByMonthAsync(bool isShort, bool isSignificant, int year, CancellationToken cancellationToken);
+        
+        /// <summary>
+        /// Получает прирост сотрудников по направлениям и месяцам
+        /// </summary>
+        Task<TotalGrowByMonthAndDirection> GetTotalGrowByMonthAndDirectionAsync(int year, CancellationToken cancellationToken);
 
         /// <summary>
         /// Получает список сотрудников компании

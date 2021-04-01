@@ -8,7 +8,10 @@
 <h1>Сводка по найму</h1>
 <br />
 <form method="get" onsubmit="submitForm()">
-    @Html.DropDownListFor(m => m.Filter.SignificantStatusId, Model.SignificantStatus, new { id = "significantStatusId", onChange = "this.form.submit()" })
+    @Html.CheckBoxFor(m => m.Filter.IsShort, new { id = "isShort", onChange = "this.form.submit()" })
+    @Html.LabelFor(m => m.Filter.IsShort, "Сокращенный вид")
+    @Html.CheckBoxFor(m => m.Filter.IsSignificant, new { id = "IsSignificant", onChange = "this.form.submit()" })
+    @Html.LabelFor(m => m.Filter.IsSignificant, "Показывать только значимые")
 </form>
 <br />
 <table class="table table-striped" style="font-size: 12px;" id="InfoTable">

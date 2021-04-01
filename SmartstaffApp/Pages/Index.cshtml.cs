@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Web;
@@ -22,6 +23,9 @@ namespace SmartstaffApp.Pages
 
         public IList<InformationByMonth> InformationByMonth { get; set; }
 
+        public TotalGrowByMonthAndDirection TotalGrowByMonthAndDirection { get; set; }
+
+        public IList<ShortActiveStaffVM> ShortActiveStaffs { get; set; }
 
         private readonly ILogger<IndexModel> _logger;
         private readonly IStaffService staffService;
@@ -40,6 +44,15 @@ namespace SmartstaffApp.Pages
             var year = DateTime.Now.Year;
             this.CurrentData = await this.staffService.GetCurrentDataAsync(cancellationToken);
             this.InformationByMonth = await this.staffService.GetInformationByMonthAsync(year, cancellationToken);
+            this.TotalGrowByMonthAndDirection = await this.staffService.GetTotalGrowByMonthAndDirectionAsync(year, cancellationToken);
+            var staff = await this.staffService.GetStaffAsync(cancellationToken);
+
+            this.ShortActiveStaffs = staff.Where(el => el.IsActive).GroupBy(el => el.Direction).Select(cl => new ShortActiveStaffVM
+            {
+                DirectionId = cl.First().DirectionId,
+                DirectionName = cl.First().Direction,
+                StaffCount = cl.Count()
+            }).ToList();
         }
 
         private async Task UpdateHeading(MouseEventArgs e)
