@@ -29,19 +29,17 @@ namespace WorkerService
             await DoWork(stoppingToken);
         }
 
-        private async Task DoWork(CancellationToken stoppingToken)
+        private Task DoWork(CancellationToken stoppingToken)
         {
             _logger.LogInformation(
                 "Consume Scoped Service Hosted Service is working.");
 
             using (var scope = Services.CreateScope())
             {
-                var scopedProcessingService =
-                    scope.ServiceProvider
-                        .GetRequiredService<ILoadInterviewDataService>();
-
-                await scopedProcessingService.LoadAsync(stoppingToken);
+                scope.ServiceProvider.GetRequiredService<ILoadStaffDataService>().LoadAsync(stoppingToken);
+                scope.ServiceProvider.GetRequiredService<ILoadInterviewDataService>().LoadAsync(stoppingToken);
             }
+            return Task.CompletedTask;
         }
 
         public override async Task StopAsync(CancellationToken stoppingToken)

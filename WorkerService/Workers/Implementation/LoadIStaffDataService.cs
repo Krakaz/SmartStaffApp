@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace WorkerService.Workers.Implementation
 {
-    internal class LoadInterviewDataService : ILoadInterviewDataService
+    internal class LoadIStaffDataService : ILoadStaffDataService
     {
-        private readonly ILogger<LoadInterviewDataService> logger;
+        private readonly ILogger<LoadIStaffDataService> logger;
         private readonly DataLoader.Maketalents.Services.IMaketalentsService maketalentsService;
 
-        public LoadInterviewDataService(ILogger<LoadInterviewDataService> logger,
+        public LoadIStaffDataService(ILogger<LoadIStaffDataService> logger,
             DataLoader.Maketalents.Services.IMaketalentsService maketalentsService)
         {
             this.logger = logger;
@@ -20,10 +20,11 @@ namespace WorkerService.Workers.Implementation
         {
             while (!cancellationToken.IsCancellationRequested)
             {
+                await this.maketalentsService.LoadNewStaffAsync(cancellationToken);
                 var year = DateTime.Now.Year;
-                await this.maketalentsService.LoadIntervievInformationAsync(year, cancellationToken);
+                await this.maketalentsService.UpdateFiredStaffAsync(year, cancellationToken);
 
-                await Task.Delay(86400000, cancellationToken);
+                await Task.Delay(28800000, cancellationToken);
             }
         }
     }

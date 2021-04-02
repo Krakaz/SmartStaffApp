@@ -110,7 +110,8 @@ namespace SmartstaffApp.Pages
                         Id = el.Id, 
                         Birthday = el.Birthday.Value, 
                         FullName = el.FullName, 
-                        Day = el.Birthday.Value.Day
+                        Day = el.Birthday.Value.Day,
+                        Direction = el.Direction
                      })
                 .OrderBy(el => el.Day)
                 .ToList();
