@@ -42,17 +42,7 @@ namespace SmartstaffApp.Pages
         public async Task OnGet(CancellationToken cancellationToken)
         {
             var year = DateTime.Now.Year;
-            this.CurrentData = await this.staffService.GetCurrentDataAsync(cancellationToken);
-            this.InformationByMonth = await this.staffService.GetInformationByMonthAsync(year, cancellationToken);
-            this.TotalGrowByMonthAndDirection = await this.staffService.GetTotalGrowByMonthAndDirectionAsync(year, cancellationToken);
-            var staff = await this.staffService.GetStaffAsync(cancellationToken);
-
-            this.ShortActiveStaffs = staff.Where(el => el.IsActive).GroupBy(el => el.Direction).Select(cl => new ShortActiveStaffVM
-            {
-                DirectionId = cl.First().DirectionId,
-                DirectionName = cl.First().Direction,
-                StaffCount = cl.Count()
-            }).ToList();
+            await this.FillPageData(year, cancellationToken);
         }
 
         private async Task UpdateHeading(MouseEventArgs e)
@@ -64,16 +54,29 @@ namespace SmartstaffApp.Pages
         {
             var year = DateTime.Now.Year;
             await this.maketalentsService.LoadIntervievInformationAsync(year, cancellationToken);
-            this.CurrentData = await this.staffService.GetCurrentDataAsync(cancellationToken);
-            this.InformationByMonth = await this.staffService.GetInformationByMonthAsync(year, cancellationToken);
+            await this.FillPageData(year, cancellationToken);
         }
         public async Task OnPostUpdateStaff(CancellationToken cancellationToken)
         {
             var year = DateTime.Now.Year;
             await this.maketalentsService.LoadNewStaffAsync(cancellationToken);            
             await this.maketalentsService.UpdateFiredStaffAsync(year, cancellationToken);
+            await this.FillPageData(year, cancellationToken);
+        }
+
+        private async Task FillPageData(int year, CancellationToken cancellationToken)
+        {
             this.CurrentData = await this.staffService.GetCurrentDataAsync(cancellationToken);
             this.InformationByMonth = await this.staffService.GetInformationByMonthAsync(year, cancellationToken);
+            this.TotalGrowByMonthAndDirection = await this.staffService.GetTotalGrowByMonthAndDirectionAsync(year, cancellationToken);
+            var staff = await this.staffService.GetStaffAsync(cancellationToken);
+
+            this.ShortActiveStaffs = staff.Where(el => el.IsActive).GroupBy(el => el.Direction).Select(cl => new ShortActiveStaffVM
+            {
+                DirectionId = cl.First().DirectionId,
+                DirectionName = cl.First().Direction,
+                StaffCount = cl.Count()
+            }).ToList();
         }
     }
 }

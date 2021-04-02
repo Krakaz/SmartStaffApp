@@ -34,6 +34,9 @@ namespace SmartstaffApp.Pages
 
         public IList<StaffVM> Staffs { get; set; }
         public IList<ShortActiveStaffVM> ShortActiveStaffs { get; set; }
+        public IList<BirthdayStaffVM> BirthdayStaffs { get; set; }
+
+
         public StaffFilter Filter { get; set; } = new StaffFilter();
         public StaffSort Sort { get; set; } = new StaffSort();
 
@@ -99,6 +102,18 @@ namespace SmartstaffApp.Pages
                 DirectionName = cl.First().Direction,
                 StaffCount = cl.Count()
             }).ToList();
+
+            this.BirthdayStaffs = staff.Where(el => el.IsActive)
+                .Where(el => el.Birthday?.Month == DateTime.Now.Month)
+                .Select(el => new BirthdayStaffVM 
+                    { 
+                        Id = el.Id, 
+                        Birthday = el.Birthday.Value, 
+                        FullName = el.FullName, 
+                        Day = el.Birthday.Value.Day
+                     })
+                .OrderBy(el => el.Day)
+                .ToList();
 
             if (filter.StaffStatusId != 0)
             {                

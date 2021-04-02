@@ -12,17 +12,40 @@
             <tr class="table-warning" style="font-weight: bold;">
                 @foreach (var item in Model.ShortActiveStaffs)
                 {
-                <td>@item.DirectionName</td>
+                    <td>@item.DirectionName</td>
                 }
                 <td>Всего</td>
             </tr>
             <tr>
                 @foreach (var item in Model.ShortActiveStaffs)
                 {
-                <td>@item.StaffCount</td>
+                    <td>@item.StaffCount</td>
                 }
                 <td sstyle="font-weight: bold;">@Model.ShortActiveStaffs.Sum(el => el.StaffCount)</td>
             </tr>
+        </table>
+    }
+</div>
+<br />
+<h1>Дни рождения в этом месяце</h1>
+<div>
+    @{
+        <table class="table table-striped">
+            <tr class="table-warning" style="font-weight: bold;">
+                <th>ФИО</th>
+                <th>Дата рождения</th>
+                <th>Возраст</th>
+            </tr>
+
+            @foreach (var item in Model.BirthdayStaffs)
+            {
+                <tr>
+                    <td>@item.FullName</td>
+                    <td>@item.Birthday.ToString("dd.MM.yyyy")</td>
+                    <td>@item.Age</td>
+
+                </tr>
+            }
         </table>
     }
 </div>
@@ -68,22 +91,22 @@
                 </td>
             </tr>
             @foreach (var row in @Model.Staffs)
-        {
-            var cl = (!row.IsActive) ? "class=table-danger" : (row.IsArived) ? "class=table-info" : "";
-            index++;
+            {
+                var cl = (!row.IsActive) ? "class=table-danger" : (row.IsArived) ? "class=table-info" : "";
+                index++;
 
-        <tr @cl>
-            <td>@index</td>
-            <td><a href="https://smartstaff.simbirsoft1.com/pages/employee/view.xhtml?id=@row.Id" target="_blank">@row.FullName</a></td>
-            <td>@row.Birthday?.ToString("dd.MM.yyyy")</td>
-            <td>@row.FirstWorkingDate.ToString("dd.MM.yyyy")</td>
-            <td>@row.NotActiveDate?.ToString("dd.MM.yyyy")</td>
-            <td>@row.Position</td>
-            <td>@row.Direction</td>
-            <td>@row.Phones</td>
-        </tr>
+                <tr @cl>
+                    <td>@index</td>
+                    <td><a href="https://smartstaff.simbirsoft1.com/pages/employee/view.xhtml?id=@row.Id" target="_blank">@row.FullName</a></td>
+                    <td>@row.Birthday?.ToString("dd.MM.yyyy")</td>
+                    <td>@row.FirstWorkingDate.ToString("dd.MM.yyyy")</td>
+                    <td>@row.NotActiveDate?.ToString("dd.MM.yyyy")</td>
+                    <td>@row.Position</td>
+                    <td>@row.Direction</td>
+                    <td>@row.Phones</td>
+                </tr>
 
-        }
+            }
 
         </table>
     </div>

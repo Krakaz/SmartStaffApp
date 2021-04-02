@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DataLoader\DataLoader.csproj" />
     <ProjectReference Include="..\Repo\Repo.csproj" />
+    <ProjectReference Include="..\WorkerService\WorkerService.csproj" />
   </ItemGroup>
 
 </Project>
