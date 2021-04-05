@@ -83,7 +83,7 @@ namespace DataLoader.Maketalents.Services.Implementation
 
         public async Task LoadNewStaffAsync(CancellationToken cancellationToken)
         {
-            var requestSTR = "https://smartstaff.simbirsoft1.com/rest/employee/staff";
+            var requestSTR = "https://smartstaff.simbirsoft1.com/rest/employee/staff?ignoreRestrictions=true";
             var request = await this.GetHttpRequestMessageAsync(requestSTR);
 
             var client = clientFactory.CreateClient();
@@ -93,8 +93,6 @@ namespace DataLoader.Maketalents.Services.Implementation
             using var responseStream = await response.Content.ReadAsStreamAsync();
             var requestResult = await JsonSerializer.DeserializeAsync<IList<SourceStaff>>(responseStream);
 
-
-            var positions = requestResult.Select(el => el.positions.First()).ToList().Distinct();
 
             var resultList = requestResult.Where(x => x.city == "Краснодар").ToList();
 
