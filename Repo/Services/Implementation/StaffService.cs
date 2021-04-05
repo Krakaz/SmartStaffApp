@@ -67,11 +67,12 @@ namespace Repo.Services.Implementation
             }
             else
             {
-                if(staffDB.MiddleName != staff.MiddleName)
+                if(staffDB.MiddleName != staff.MiddleName || staffDB.Female is null || staffDB.Birthday is null)
                 {
                     staffDB.MiddleName = staff.MiddleName;
                     staffDB.FullName = staff.FullName;
                     staffDB.Birthday = staff.Birthday;
+                    staffDB.Female = staff.Female;
                     this.repoContsext.Staffs.Update(staffDB);
                     await this.repoContsext.SaveChangesAsync();
                 }

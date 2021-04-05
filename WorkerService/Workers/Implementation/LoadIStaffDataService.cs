@@ -18,11 +18,13 @@ namespace WorkerService.Workers.Implementation
         }
         public async Task LoadAsync(CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested) 
             {
+                logger.LogInformation("LoadIStaffDataService Hosted Service running.");
                 await this.maketalentsService.LoadNewStaffAsync(cancellationToken);
                 var year = DateTime.Now.Year;
                 await this.maketalentsService.UpdateFiredStaffAsync(year, cancellationToken);
+                logger.LogInformation("LoadIStaffDataService Hosted Service stoped.");
 
                 await Task.Delay(28800000, cancellationToken);
             }

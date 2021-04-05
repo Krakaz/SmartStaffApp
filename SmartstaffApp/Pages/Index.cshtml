@@ -1,5 +1,6 @@
 ﻿@page
 @model IndexModel
+@using Extensions
 @{
     ViewData["Title"] = "Index";
 }
@@ -9,6 +10,8 @@
         <form method="post" asp-page-handler="updateInterview"><button class="btn btn-primary btn-sm" style="margin-left: 10px;">Итнервью</button></form>
         <form method="post" asp-page-handler="updateStaff"><button class="btn btn-primary btn-sm" style="margin-left: 10px;">Сотрудники</button></form>
     </div>
+
+    @*<div id="staffChart"></div>*@
 
     <p><h3>Текущее состояние</h3></p>
 
@@ -48,14 +51,14 @@
                 <tr class="table-primary" style="font-weight: bold;">
                     @foreach (var item in Model.ShortActiveStaffs)
                     {
-                    <td>@item.DirectionName</td>
+                        <td>@item.DirectionName</td>
                     }
                     <td>Всего</td>
                 </tr>
                 <tr>
                     @foreach (var item in Model.ShortActiveStaffs)
                     {
-                    <td>@item.StaffCount</td>
+                        <td>@item.StaffCount</td>
                     }
                     <td sstyle="font-weight: bold;">@Model.ShortActiveStaffs.Sum(el => el.StaffCount)</td>
                 </tr>
@@ -72,28 +75,28 @@
                     <th>Месяц</th>
                     @foreach (var item in Model.TotalGrowByMonthAndDirection.Header)
                     {
-                    <th>@item.Name</th>
+                        <th>@item.Name</th>
                     }
                     <th>Всего</th>
                 </tr>
 
                 @foreach (var item in Model.TotalGrowByMonthAndDirection.Values)
                 {
-                <tr>
-                    <td>@item.MonthName</td>
-                    @foreach (var direction in Model.TotalGrowByMonthAndDirection.Header)
+                    <tr>
+                        <td>@item.MonthName</td>
+                        @foreach (var direction in Model.TotalGrowByMonthAndDirection.Header)
                         {
                             var value = item.TotalGrowByDirection.Where(el => el.DirectionId == direction.Id).FirstOrDefault()?.TotalGrowCount;
                             var cellClass = value < 0 ? "class = table-danger" : "";
 
                             <td @cellClass>@value</td>
                         }
-                    @{
-                    var totalValue = item.TotalGrowByDirection.Sum(el => el.TotalGrowCount);
-                    var totalCellClass = totalValue < 0 ? "class = table-danger" : "";
-                    }
-                    <td @totalCellClass style="font-weight: bold;">@totalValue</td>
-                </tr>
+                        @{
+                            var totalValue = item.TotalGrowByDirection.Sum(el => el.TotalGrowCount);
+                            var totalCellClass = totalValue < 0 ? "class = table-danger" : "";
+                        }
+                        <td @totalCellClass style="font-weight: bold;">@totalValue</td>
+                    </tr>
                 }
 
 
@@ -116,15 +119,15 @@
         </tr>
         @foreach (var row in @Model.InformationByMonth)
         {
-        <tr>
-            <td>@row.MonthName</td>
-            <td>@row.IncomingCnt</td>
-            <td>@row.ArivedCnt</td>
-            <td>@row.FiredCnt</td>
-            <td>@row.CulculateCount</td>
-            <td>@row.InterviewCnt</td>
-            <td>@row.ResultativityCnt %</td>
-        </tr>
+            <tr>
+                <td>@row.MonthName</td>
+                <td>@row.IncomingCnt</td>
+                <td>@row.ArivedCnt</td>
+                <td>@row.FiredCnt</td>
+                <td>@row.CulculateCount</td>
+                <td>@row.InterviewCnt</td>
+                <td>@row.ResultativityCnt %</td>
+            </tr>
         }
 
     </table>
@@ -132,3 +135,43 @@
 
 }
 
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart', 'line']});
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    function drawChart() {
+
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Месяц');
+        data.addColumn('number', 'Кол-во');
+        data.addRows([
+            @foreach(var data in Model.TotalGrowByMonthAndDirection.Values.Where(el => el.Month != 13).OrderBy(el => el.Month))
+            {
+                <text>[@data.Month, @data.TotalGrowByDirection.Sum(el => el.TotalGrowCount)], </text>
+            }
+        ]);
+
+        // Set chart options
+        var options = {
+            'title': 'Динамика сотрудников',
+            curveType: 'function',
+            pointSize: 7,
+            'width': '100%',
+            'height': 500
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.LineChart(document.getElementById('staffChart'));
+        chart.draw(data, options);
+    }
+</script>

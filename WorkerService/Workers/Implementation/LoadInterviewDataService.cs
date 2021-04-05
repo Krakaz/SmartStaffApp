@@ -20,9 +20,10 @@ namespace WorkerService.Workers.Implementation
         {
             while (!cancellationToken.IsCancellationRequested)
             {
+                logger.LogInformation("LoadInterviewDataService Hosted Service running.");
                 var year = DateTime.Now.Year;
                 await this.maketalentsService.LoadIntervievInformationAsync(year, cancellationToken);
-
+                logger.LogInformation("LoadInterviewDataService Hosted Service stoped.");
                 await Task.Delay(86400000, cancellationToken);
             }
         }
