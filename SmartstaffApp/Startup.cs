@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DataLoader;
@@ -9,7 +10,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Repo;
+using SmartstaffApp.Logger;
 using SmartstaffApp.Services;
 using SmartstaffApp.Services.Implementation;
 using WorkerService;
@@ -44,8 +47,12 @@ namespace SmartstaffApp
             services.AddRazorPages();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            var pathLogger = Path.Combine(Directory.GetCurrentDirectory(), "logs", DateTime.Now.Date.ToString("yyyyMMdd") + "logger" + ".txt");
+            loggerFactory.AddFile(pathLogger);
+            var logger = loggerFactory.CreateLogger("FileLogger");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
