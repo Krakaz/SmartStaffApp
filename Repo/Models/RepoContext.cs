@@ -7,7 +7,8 @@ namespace Repo.Models
 {
     public class RepoContext : DbContext
     {
-        
+
+        public DbSet<City> Cities { get; set; }
         public DbSet<Interview> Interviews { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<Group> Groups { get; set; }

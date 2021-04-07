@@ -202,9 +202,10 @@ namespace SmartstaffApp.Services.Implementation
             }
 
             var staffs = await this.repoStaffService.GetAllAsync(cancellationToken);
-            
 
-            for (int month = 1; month <= DateTime.Now.Month; month++)
+            var lastMonth = (DateTime.Now.Year == year) ? DateTime.Now.Month : 12;
+
+            for (int month = 1; month <= lastMonth; month++)
             {
                 var monthInfo = new TotalGrowByMonthAndDirectionValues()
                 {

@@ -83,7 +83,7 @@ namespace DataLoader.Maketalents.Services.Implementation
 
         public async Task LoadNewStaffAsync(CancellationToken cancellationToken)
         {
-            var requestSTR = "https://smartstaff.simbirsoft1.com/rest/employee/staff?ignoreRestrictions=true";
+            var requestSTR = "https://smartstaff.simbirsoft1.com/rest/employee/staff";//?ignoreRestrictions=true";
             var request = await this.GetHttpRequestMessageAsync(requestSTR);
 
             var client = clientFactory.CreateClient();
@@ -93,6 +93,8 @@ namespace DataLoader.Maketalents.Services.Implementation
             using var responseStream = await response.Content.ReadAsStreamAsync();
             var requestResult = await JsonSerializer.DeserializeAsync<IList<SourceStaff>>(responseStream);
 
+            //var resultList2 = requestResult.Where(x => x.city == "Ростов-на-Дону").ToList();
+            //var resultList3 = requestResult.Where(x => x.city == "Таганрог").ToList();
 
             var resultList = requestResult.Where(x => x.city == "Краснодар").ToList();
 
@@ -132,6 +134,8 @@ namespace DataLoader.Maketalents.Services.Implementation
                         new Repo.Models.Position() { Id = sourcePosition.id, Name = sourcePosition.name }
                         );
                 }
+
+                dtoStaff.City = new Repo.Models.City { Name = sourceStaff.city };
 
                 await this.repoStaffService.InsertAsync(dtoStaff, cancellationToken);
             }

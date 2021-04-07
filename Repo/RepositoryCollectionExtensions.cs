@@ -11,6 +11,7 @@ namespace Repo
         public static IServiceCollection AddRepositoryCollection(this IServiceCollection services, string defaultConnection)
         {
             services.AddDbContext<RepoContext>(options => options.UseSqlServer(defaultConnection));
+            services.AddScoped<ICityService, CityService>();
             services.AddScoped<IInterviewService, InterviewService>();
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IPositionService, PositionService>();

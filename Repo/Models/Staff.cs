@@ -26,6 +26,7 @@ namespace Repo.Models
         public DateTime? NotActiveDate { get; set; }
         public bool IsArived { get; set; }
         public DateTime? ArivedDate { get; set; }
+        public City City { get; set; }
     }
 
 }

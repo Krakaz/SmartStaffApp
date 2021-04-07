@@ -12,12 +12,17 @@ namespace Repo.Services.Implementation
         private readonly RepoContext repoContsext;
         private readonly IGroupService groupService;
         private readonly IPositionService positionService;
+        private readonly ICityService cityService;
 
-        public StaffService(RepoContext repoContsext, IGroupService groupService, IPositionService positionService)
+        public StaffService(RepoContext repoContsext, 
+            IGroupService groupService, 
+            IPositionService positionService,
+            ICityService cityService)
         {
             this.repoContsext = repoContsext;
             this.groupService = groupService;
             this.positionService = positionService;
+            this.cityService = cityService;
         }
 
         public async Task<IList<Staff>> GetActiveAsync(CancellationToken cancellationToken)
@@ -32,13 +37,21 @@ namespace Repo.Services.Implementation
 
         public async Task<IList<Staff>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await this.repoContsext.Staffs.Include(el => el.Positions).ToListAsync();
+            return await this.repoContsext.Staffs.Include(el => el.Positions).Include(el => el.City).ToListAsync();
         }
 
         public async Task<int> InsertAsync(Staff staff, CancellationToken cancellationToken)
         {
-            var staffDB = await this.repoContsext.Staffs.FindAsync(staff.Id);
-            if(staffDB == null)
+            var staffDB = await this.repoContsext.Staffs.Include(el => el.City).FirstOrDefaultAsync(el => el.Id == staff.Id);
+
+            var city = await this.cityService.GetByNameAsync(staff.City.Name, cancellationToken);
+            if(city is null)
+            {
+                city = await this.cityService.InsertAsync(staff.City, cancellationToken);
+            }
+            staff.City = city;
+
+            if (staffDB == null)
             {
                 for(int i = 0; i < staff.Groups.Count; i++)
                 {
@@ -60,19 +73,20 @@ namespace Repo.Services.Implementation
                         await this.positionService.InsertAsync(pos, cancellationToken);
                     }
                     staff.Positions[i] = pos;
-                }
+                }                
 
                 await this.repoContsext.Staffs.AddAsync(staff);
                 await this.repoContsext.SaveChangesAsync();
             }
             else
             {
-                if(staffDB.MiddleName != staff.MiddleName || staffDB.Female is null || staffDB.Birthday is null)
+                if(staffDB.MiddleName != staff.MiddleName || staffDB.Female is null || staffDB.Birthday is null || staffDB.City is null)
                 {
                     staffDB.MiddleName = staff.MiddleName;
                     staffDB.FullName = staff.FullName;
                     staffDB.Birthday = staff.Birthday;
                     staffDB.Female = staff.Female;
+                    staffDB.City = city;
                     this.repoContsext.Staffs.Update(staffDB);
                     await this.repoContsext.SaveChangesAsync();
                 }
@@ -86,6 +100,17 @@ namespace Repo.Services.Implementation
             this.repoContsext.Staffs.Update(staff);
             await this.repoContsext.SaveChangesAsync();
             return staff;
+        }
+
+        public async Task<IList<Staff>> GetActiveByCityIdAsync(int cityId, CancellationToken cancellationToken)
+        {
+            return await this.repoContsext.Staffs.Include(el => el.Positions).Include(el => el.City).Where(el => el.IsActive == true && el.City.Id == cityId).ToListAsync();
+        }
+
+        public async Task<IList<Staff>> GetAllByCityIdAsync(int cityId, CancellationToken cancellationToken)
+        {
+            return await this.repoContsext.Staffs.Include(el => el.Positions).Include(el => el.City).Where(el => el.City.Id == cityId).ToListAsync();
+            
         }
     }
 }
