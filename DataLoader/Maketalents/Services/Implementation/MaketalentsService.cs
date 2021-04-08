@@ -1,4 +1,5 @@
 ﻿using DataLoader.Maketalents.Models;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +12,20 @@ namespace DataLoader.Maketalents.Services.Implementation
 {
     internal class MaketalentsService : IMaketalentsService
     {
+        private readonly ILogger<MaketalentsService> logger;
         private readonly IHttpClientFactory clientFactory;
         private readonly IAuthService authService;
         private readonly Repo.Services.IInterviewService repoInterviewService;
         private readonly Repo.Services.IStaffService repoStaffService;
         private string authToken = "";
 
-        public MaketalentsService(IHttpClientFactory clientFactory, 
+        public MaketalentsService(ILogger<MaketalentsService> logger, 
+            IHttpClientFactory clientFactory, 
             IAuthService authService,
             Repo.Services.IInterviewService repoInterviewService,
             Repo.Services.IStaffService repoStaffService)
         {
+            this.logger = logger;
             this.clientFactory = clientFactory;
             this.authService = authService;
             this.repoInterviewService = repoInterviewService;
@@ -88,56 +92,67 @@ namespace DataLoader.Maketalents.Services.Implementation
 
             var client = clientFactory.CreateClient();
 
-            var response = await client.SendAsync(request);
 
+            logger.LogInformation("MaketalentsService Start Staff Data Request");
+            var response = await client.SendAsync(request);
+            
             using var responseStream = await response.Content.ReadAsStreamAsync();
             var requestResult = await JsonSerializer.DeserializeAsync<IList<SourceStaff>>(responseStream);
+            logger.LogInformation("MaketalentsService Staff Data Gated");
 
-            //var resultList2 = requestResult.Where(x => x.city == "Ростов-на-Дону").ToList();
-            //var resultList3 = requestResult.Where(x => x.city == "Таганрог").ToList();
+            try
+            {            
+                //var resultList2 = requestResult.Where(x => x.city == "Ростов-на-Дону").ToList();
+                //var resultList3 = requestResult.Where(x => x.city == "Таганрог").ToList();
 
-            var resultList = requestResult.Where(x => x.city == "Краснодар").ToList();
+                var resultList = requestResult.Where(x => x.city == "Краснодар").ToList();
 
 
-            foreach (var sourceStaff in resultList)
+                foreach (var sourceStaff in resultList)
+                {
+
+                    var dtoStaff = new Repo.Models.Staff
+                    {
+                        Id = sourceStaff.id,
+                        Birthday = string.IsNullOrEmpty(sourceStaff.birthday) ? (DateTime?)null : DateTime.Parse(sourceStaff.birthday),
+                        Email = sourceStaff.email,
+                        Female = sourceStaff.female,
+                        FirstName = sourceStaff.firstName,
+                        LastName = sourceStaff.lastName,
+                        MiddleName = sourceStaff.middleName,
+                        FullName = sourceStaff.fullName,
+                        FirstWorkingDate = DateTime.Parse(sourceStaff.firstWorkingDate),
+                        Phones = string.Join(", ", sourceStaff.phones),
+                        Skype = sourceStaff.skype,
+                        IsArived = false,
+                        IsActive = true,
+                        Groups = new List<Repo.Models.Group>(),
+                        Positions = new List<Repo.Models.Position>()
+                    };
+
+                    foreach (var sourceGroup in sourceStaff.groups)
+                    {
+                        dtoStaff.Groups.Add(
+                            new Repo.Models.Group() { Id = sourceGroup.id, Name = sourceGroup.name }
+                            );
+                    }
+
+                    foreach (var sourcePosition in sourceStaff.positions)
+                    {
+                        dtoStaff.Positions.Add(
+                            new Repo.Models.Position() { Id = sourcePosition.id, Name = sourcePosition.name }
+                            );
+                    }
+
+                    dtoStaff.City = new Repo.Models.City { Name = sourceStaff.city };
+
+                    await this.repoStaffService.InsertAsync(dtoStaff, cancellationToken);
+                    logger.LogInformation("MaketalentsService Staff Data Loaded");
+                }
+            }
+            catch(Exception ex)
             {
-
-                var dtoStaff = new Repo.Models.Staff
-                {
-                    Id = sourceStaff.id,
-                    Birthday = string.IsNullOrEmpty(sourceStaff.birthday) ? (DateTime?)null : DateTime.Parse(sourceStaff.birthday),
-                    Email = sourceStaff.email,
-                    Female = sourceStaff.female,
-                    FirstName = sourceStaff.firstName,
-                    LastName = sourceStaff.lastName,
-                    MiddleName = sourceStaff.middleName,
-                    FullName = sourceStaff.fullName,
-                    FirstWorkingDate = DateTime.Parse(sourceStaff.firstWorkingDate),
-                    Phones = string.Join(", ", sourceStaff.phones),
-                    Skype = sourceStaff.skype,
-                    IsArived = false,
-                    IsActive = true,
-                    Groups = new List<Repo.Models.Group>(),
-                    Positions = new List<Repo.Models.Position>()
-                };
-
-                foreach (var sourceGroup in sourceStaff.groups)
-                {
-                    dtoStaff.Groups.Add(
-                        new Repo.Models.Group() { Id = sourceGroup.id, Name = sourceGroup.name }
-                        );
-                }
-
-                foreach (var sourcePosition in sourceStaff.positions)
-                {
-                    dtoStaff.Positions.Add(
-                        new Repo.Models.Position() { Id = sourcePosition.id, Name = sourcePosition.name }
-                        );
-                }
-
-                dtoStaff.City = new Repo.Models.City { Name = sourceStaff.city };
-
-                await this.repoStaffService.InsertAsync(dtoStaff, cancellationToken);
+                logger.LogError(ex, ex.Message);
             }
         }
 
@@ -147,11 +162,13 @@ namespace DataLoader.Maketalents.Services.Implementation
             var request = await this.GetHttpRequestMessageAsync(requestSTR);
             var client = clientFactory.CreateClient();
 
+            logger.LogInformation("MaketalentsService Start FiredStaff Data Request");
             var response = await client.SendAsync(request);
 
             using var responseStream = await response.Content.ReadAsStreamAsync();
             var requestResult = await JsonSerializer.DeserializeAsync<IList<FiredStaffResponse>>(responseStream);
 
+            logger.LogInformation("MaketalentsService FiredStaff Data Geted");
             foreach (var st in requestResult)
             {
                 var staff = await this.repoStaffService.GetByIdAsync(st.id, cancellationToken);
@@ -163,6 +180,8 @@ namespace DataLoader.Maketalents.Services.Implementation
                     await this.repoStaffService.UpdateAsync(staff, cancellationToken);
                 }
             }
+
+            logger.LogInformation("MaketalentsService Start FiredStaff Data Loaded");
         }
     }
 }

@@ -35,7 +35,7 @@ namespace SmartstaffApp.Logger
                     if (!exists)
                         Directory.CreateDirectory(directory);
 
-                    File.AppendAllText(filePath, DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + formatter(state, exception) + Environment.NewLine);
+                    File.AppendAllText(filePath, DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss: ") + formatter(state, exception) + Environment.NewLine);
                 }
             }
         }

@@ -10,7 +10,8 @@ namespace Repo
     {
         public static IServiceCollection AddRepositoryCollection(this IServiceCollection services, string defaultConnection)
         {
-            services.AddDbContext<RepoContext>(options => options.UseSqlServer(defaultConnection));
+            services.AddDbContext<RepoContext>(options => options.UseSqlServer(defaultConnection,
+                providerOptions => providerOptions.EnableRetryOnFailure()));
             services.AddScoped<ICityService, CityService>();
             services.AddScoped<IInterviewService, InterviewService>();
             services.AddScoped<IGroupService, GroupService>();

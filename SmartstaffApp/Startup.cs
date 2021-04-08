@@ -15,7 +15,6 @@ using Repo;
 using SmartstaffApp.Logger;
 using SmartstaffApp.Services;
 using SmartstaffApp.Services.Implementation;
-using WorkerService;
 
 namespace SmartstaffApp
 {
@@ -37,7 +36,6 @@ namespace SmartstaffApp
             services.AddControllersWithViews();
             services.AddRepositoryCollection(Configuration.GetConnectionString("DefaultConnection"));
             services.AddDataLoaderCollection();
-            services.AddWorkersCollection();
 
             services.AddScoped<IStaffService, StaffService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
