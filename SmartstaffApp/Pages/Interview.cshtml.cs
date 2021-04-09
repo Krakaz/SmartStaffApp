@@ -31,8 +31,7 @@ namespace SmartstaffApp.Pages
         }
         public async Task OnGet(InterviewFilter filter, CancellationToken cancellationToken)
         {
-            var year = DateTime.Now.Year;
-            this.DetailInformationByMonth = await this.staffService.GetDetailInformationByMonthAsync(filter.IsShort, filter.IsSignificant, year, cancellationToken);
+            this.DetailInformationByMonth = await this.staffService.GetDetailInformationByMonthAsync(filter.IsShort, filter.IsSignificant, filter.Year, cancellationToken);
         }
     }
 
@@ -46,5 +45,7 @@ namespace SmartstaffApp.Pages
         /// Вывод в сокращенном виде
         /// </summary>
         public bool IsShort { get; set; }
+
+        public int Year { get; set; } = DateTime.Now.Year;
     }
 }

@@ -8,6 +8,8 @@
 <h1>Сводка по найму</h1>
 <br />
 <form method="get" onsubmit="submitForm()">
+    <label for="year" style="margin-left: 10px;">Год</label>
+    @Html.TextBoxFor(m => m.Filter.Year, "", new { type = "number" })
     @Html.CheckBoxFor(m => m.Filter.IsShort, new { id = "isShort", onChange = "this.form.submit()" })
     @Html.LabelFor(m => m.Filter.IsShort, "Сокращенный вид")
     @Html.CheckBoxFor(m => m.Filter.IsSignificant, new { id = "IsSignificant", onChange = "this.form.submit()" })
