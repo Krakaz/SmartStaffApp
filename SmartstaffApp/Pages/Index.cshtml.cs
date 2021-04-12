@@ -111,12 +111,12 @@ namespace SmartstaffApp.Pages
             var chatMembers = await this.chatService.GetMainChatMembersAsync(cancellationToken);
             if(chatMembers.ok)
             {
-                this.UsersLooseInChat = staff.Where(el => el.IsActive == true && !chatMembers.members.Any(m => m.userId == el.Email)).Select(el => el.FullName).ToList();
+                this.UsersLooseInChat = staff.Where(el => el.IsActive == true && !chatMembers.members.Any(m => m.userId == el.Email)).Select(el => el.Direction + ": " + el.FullName).ToList();
             }
             var chanalMembers = await this.chatService.GetMainChanalMembersAsync(cancellationToken);
             if (chanalMembers.ok)
             {
-                this.UsersLooseInChanal = staff.Where(el => el.IsActive == true && !chanalMembers.members.Any(m => m.userId == el.Email)).Select(el => el.FullName).ToList();
+                this.UsersLooseInChanal = staff.Where(el => el.IsActive == true && !chanalMembers.members.Any(m => m.userId == el.Email)).Select(el => el.Direction + ": " + el.FullName).ToList();
             }
         }
     }

@@ -45,6 +45,6 @@ namespace DataLoader.Timepad.Services.Implementation
             var requestResult = await JsonSerializer.DeserializeAsync<EventList>(responseStream);
 
             return requestResult;
-        }
+        }       
     }
 }
