@@ -105,7 +105,7 @@ namespace DataLoader.Maketalents.Services.Implementation
                 //var resultList2 = requestResult.Where(x => x.city == "Ростов-на-Дону").ToList();
                 //var resultList3 = requestResult.Where(x => x.city == "Таганрог").ToList();
 
-                var resultList = requestResult.Where(x => x.city == "Краснодар").ToList();
+                var resultList = requestResult.Where(x => x.groups.Any(g => g.id == 3784995)).ToList(); //Филиал Краснодар
 
 
                 foreach (var sourceStaff in resultList)
