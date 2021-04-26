@@ -105,6 +105,8 @@ namespace SmartstaffApp.Pages
             {
                 DirectionId = cl.First().DirectionId,
                 DirectionName = cl.First().Direction,
+                IsTarget = cl.First().IsTargetDirection,
+                HasRO = cl.First().DirectionHasRO,
                 StaffCount = cl.Count()
             }).ToList();
 

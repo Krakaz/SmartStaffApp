@@ -90,9 +90,11 @@
                 <tr>
                     @foreach (var item in Model.ShortActiveStaffs)
                     {
-                        <td>@item.StaffCount</td>
+                        var tdClass = item.IsTarget ? item.HasRO ? "class = table-success" : "class = table-danger" : "";
+
+                        <td @tdClass>@item.StaffCount</td>
                     }
-                    <td sstyle="font-weight: bold;">@Model.ShortActiveStaffs.Sum(el => el.StaffCount)</td>
+                    <td style="font-weight: bold;">@Model.ShortActiveStaffs.Sum(el => el.StaffCount)</td>
                 </tr>
             </table>
         }

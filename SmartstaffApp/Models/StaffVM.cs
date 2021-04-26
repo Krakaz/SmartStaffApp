@@ -20,6 +20,8 @@ namespace SmartstaffApp.Models
         public int PositionId { get; set; }
         public string Direction { get; set; }
         public int DirectionId { get; set; }
+        public bool IsTargetDirection { get; set; }
+        public bool DirectionHasRO { get; set; }
         public bool IsActive { get; set; }
         public DateTime? NotActiveDate { get; set; }
         public bool IsArived { get; set; }

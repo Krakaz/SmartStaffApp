@@ -31,8 +31,8 @@ namespace SmartstaffApp.Services.Implementation
 
             var staffs = await this.repoStaffService.GetActiveAsync(cancellationToken);
             result.CurrentCount = staffs.Count();
-            result.FirstTargetCount = 51;
-            result.SecondTargetCount = 101;
+            result.FirstTargetCount = 101;
+            result.SecondTargetCount = 120;
             result.YearTargetCount = 120;
 
             return result;
@@ -180,7 +180,9 @@ namespace SmartstaffApp.Services.Implementation
                 PositionId = (int)el.Positions.FirstOrDefault()?.Id,
                 Position = el.Positions.FirstOrDefault()?.Name,
                 Direction = positions.Where(ps => ps.Childs.Any(pps => pps.Id == el.Positions.FirstOrDefault()?.Id)).FirstOrDefault()?.Name,
-                DirectionId = (int)positions.Where(ps => ps.Childs.Any(pps => pps.Id == el.Positions.FirstOrDefault()?.Id)).FirstOrDefault()?.Id
+                DirectionId = (int)positions.Where(ps => ps.Childs.Any(pps => pps.Id == el.Positions.FirstOrDefault()?.Id)).FirstOrDefault()?.Id,
+                IsTargetDirection = (bool)positions.Where(ps => ps.Childs.Any(pps => pps.Id == el.Positions.FirstOrDefault()?.Id)).FirstOrDefault()?.IsTarget,
+                DirectionHasRO = (bool)positions.Where(ps => ps.Childs.Any(pps => pps.Id == el.Positions.FirstOrDefault()?.Id)).FirstOrDefault()?.HasRO,
             }).ToList();
 
             return result;
