@@ -17,19 +17,22 @@ namespace DataLoader.Maketalents.Services.Implementation
         private readonly IAuthService authService;
         private readonly Repo.Services.IInterviewService repoInterviewService;
         private readonly Repo.Services.IStaffService repoStaffService;
+        private readonly MyTeam.Services.IMessageService messageService;
         private string authToken = "";
 
         public MaketalentsService(ILogger<MaketalentsService> logger, 
             IHttpClientFactory clientFactory, 
             IAuthService authService,
             Repo.Services.IInterviewService repoInterviewService,
-            Repo.Services.IStaffService repoStaffService)
+            Repo.Services.IStaffService repoStaffService,
+            DataLoader.MyTeam.Services.IMessageService messageService)
         {
             this.logger = logger;
             this.clientFactory = clientFactory;
             this.authService = authService;
             this.repoInterviewService = repoInterviewService;
             this.repoStaffService = repoStaffService;
+            this.messageService = messageService;
         }
 
         private async Task<HttpRequestMessage> GetHttpRequestMessageAsync(string requestStr)
@@ -146,14 +149,20 @@ namespace DataLoader.Maketalents.Services.Implementation
 
                     dtoStaff.City = new Repo.Models.City { Name = sourceStaff.city };
 
-                    await this.repoStaffService.InsertAsync(dtoStaff, cancellationToken);
-                    logger.LogInformation("MaketalentsService Staff Data Loaded");
+                    var staff = await this.repoStaffService.GetByIdAsync(sourceStaff.id, cancellationToken);
+                    if(staff is null)
+                    {
+                        await this.messageService.SendMessage("denis.kuznetcov@simbirsoft.com", $"{dtoStaff.FullName} новый сотрудник.", cancellationToken);
+                    }
+
+                    await this.repoStaffService.InsertAsync(dtoStaff, cancellationToken);                    
                 }
             }
             catch(Exception ex)
             {
                 logger.LogError(ex, ex.Message);
             }
+            logger.LogInformation("MaketalentsService Staff Data Loaded");
         }
 
         public async Task UpdateFiredStaffAsync(int year, CancellationToken cancellationToken)
@@ -178,6 +187,8 @@ namespace DataLoader.Maketalents.Services.Implementation
                     DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime();
                     staff.NotActiveDate = epoch.AddMilliseconds(st.date);
                     await this.repoStaffService.UpdateAsync(staff, cancellationToken);
+                    await this.messageService.SendMessage("denis.kuznetcov@simbirsoft.com", $"{staff.FullName} Уволен.", cancellationToken);
+
                 }
             }
 

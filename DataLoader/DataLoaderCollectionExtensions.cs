@@ -16,6 +16,7 @@ namespace DataLoader
             services.AddScoped<IMaketalentsService, MaketalentsService>();
             services.AddScoped<ITimePadEventService, TimePadEventService>();
             services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IMessageService, MessageService>();
 
             return services;
         }

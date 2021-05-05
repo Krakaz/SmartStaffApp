@@ -16,7 +16,7 @@ namespace DataLoader.MyTeam.Services.Implementation
         {
             this.clientFactory = clientFactory;
         }
-        public async Task<ChatMembers> GetChatMembersAsync(string chatId, CancellationToken cancellationToken)
+        private async Task<ChatMembers> GetChatMembersAsync(string chatId, CancellationToken cancellationToken)
         {
             var requestSTR = BotInfo.ApiUrl + "/chats/getMembers";
             var parametersToAdd = new Dictionary<string, string> {

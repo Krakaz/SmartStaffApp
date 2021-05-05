@@ -12,7 +12,6 @@ namespace DataLoader.MyTeam.Services
     /// </summary>
     public interface IChatService
     {
-        Task<ChatMembers> GetChatMembersAsync(string chatId, CancellationToken cancellationToken);
         Task<ChatMembers> GetMainChatMembersAsync(CancellationToken cancellationToken);
         Task<ChatMembers> GetMainChanalMembersAsync(CancellationToken cancellationToken);
     }
