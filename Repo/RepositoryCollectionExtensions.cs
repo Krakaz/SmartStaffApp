@@ -18,6 +18,7 @@ namespace Repo
             services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IStaffService, StaffService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<INotificationEmailsService, NotificationEmailsService>();
 
             return services;
         }

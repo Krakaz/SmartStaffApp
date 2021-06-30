@@ -121,13 +121,13 @@
                         @foreach (var direction in Model.TotalGrowByMonthAndDirection.Header)
                         {
                             var value = item.TotalGrowByDirection.Where(el => el.DirectionId == direction.Id).FirstOrDefault()?.TotalGrowCount;
-                            var cellClass = value < 0 ? "class = table-danger" : "";
+                            var cellClass = value < 0 ? "class = table-danger" : value > 0 ? "class = table-success" : "";
 
                             <td @cellClass>@value</td>
                         }
                         @{
                             var totalValue = item.TotalGrowByDirection.Sum(el => el.TotalGrowCount);
-                            var totalCellClass = totalValue < 0 ? "class = table-danger" : "";
+                            var totalCellClass = totalValue < 0 ? "class = table-danger" : totalValue > 0 ? "class = table-success" : "";
                         }
                         <td @totalCellClass style="font-weight: bold;">@totalValue</td>
                     </tr>

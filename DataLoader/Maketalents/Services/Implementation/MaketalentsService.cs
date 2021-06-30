@@ -152,7 +152,7 @@ namespace DataLoader.Maketalents.Services.Implementation
                     var staff = await this.repoStaffService.GetByIdAsync(sourceStaff.id, cancellationToken);
                     if(staff is null)
                     {
-                        await this.messageService.SendMessage("denis.kuznetcov@simbirsoft.com", $"{dtoStaff.FullName} новый сотрудник.", cancellationToken);
+                        await this.messageService.SendMessageToLeadersAsync($"{dtoStaff.FullName} новый сотрудник. На позиции {string.Join(", ", dtoStaff.Positions.Select(el => el.Name))}", cancellationToken);
                     }
 
                     await this.repoStaffService.InsertAsync(dtoStaff, cancellationToken);                    
@@ -187,7 +187,7 @@ namespace DataLoader.Maketalents.Services.Implementation
                     DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime();
                     staff.NotActiveDate = epoch.AddMilliseconds(st.date);
                     await this.repoStaffService.UpdateAsync(staff, cancellationToken);
-                    await this.messageService.SendMessage("denis.kuznetcov@simbirsoft.com", $"{staff.FullName} Уволен.", cancellationToken);
+                    await this.messageService.SendMessageToLeadersAsync($"{staff.FullName} Уволен.", cancellationToken);
 
                 }
             }

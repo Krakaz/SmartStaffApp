@@ -12,5 +12,7 @@ namespace DataLoader.MyTeam.Services
     public interface IMessageService
     {
         Task SendMessage(string chatId, string text, CancellationToken cancellationToken);
+
+        Task SendMessageToLeadersAsync(string text, CancellationToken cancellationToken);
     }
 }
