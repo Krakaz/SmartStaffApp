@@ -17,9 +17,9 @@ namespace Repo.Services.Implementation
         {
             this.repoContsext = repoContsext;
         }
-        public async Task<IList<string>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<IList<NotificationEmail>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await this.repoContsext.NotificationEmails.Select(el => el.Email).ToListAsync();
+            return await this.repoContsext.NotificationEmails.Include(el => el.NotificationTypes).ToListAsync();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Repo.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -11,6 +12,6 @@ namespace Repo.Services
         /// <summary>
         /// Получает список всех Email для нотификации
         /// </summary>
-        Task<IList<string>> GetAllAsync(CancellationToken cancellationToken);
+        Task<IList<NotificationEmail>> GetAllAsync(CancellationToken cancellationToken);
     }
 }

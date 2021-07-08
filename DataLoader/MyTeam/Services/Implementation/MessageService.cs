@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -40,12 +41,12 @@ namespace DataLoader.MyTeam.Services.Implementation
             var requestResult = await JsonSerializer.DeserializeAsync<MessageResponse>(responseStream);
         }
 
-        public async Task SendMessageToLeadersAsync(string text, CancellationToken cancellationToken)
+        public async Task SendMessageToLeadersAsync(int messageTypeId, string text, CancellationToken cancellationToken)
         {
             var emails = await this.notificationEmailsService.GetAllAsync(cancellationToken);
-            foreach(var email in emails)
+            foreach(var email in emails.Where(el => el.NotificationTypes.Any(tp => tp.Id == messageTypeId)))
             {
-                await this.SendMessage(email, text, cancellationToken);
+                await this.SendMessage(email.Email, text, cancellationToken);
             }
         }
     }

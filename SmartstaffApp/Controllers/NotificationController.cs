@@ -73,7 +73,7 @@ namespace SmartstaffApp.Controllers
                 //-----------------
 
                 var msg = $"{staff.Birthday.Day} {month} сотрудник @[{staff.Email}] из направления {staff.Direction} отмечает свой {age} день рождения. {Environment.NewLine}{Congratulations}";
-                await this.messageService.SendMessageToLeadersAsync(msg, cancellationToken);
+                await this.messageService.SendMessageToLeadersAsync(3, msg, cancellationToken);
             }
             
             return Ok();
