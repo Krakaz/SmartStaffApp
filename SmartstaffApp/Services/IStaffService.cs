@@ -1,4 +1,5 @@
 ﻿using SmartstaffApp.Models;
+using SmartstaffApp.Pages;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace SmartstaffApp.Services
         /// <summary>
         /// Получает сводную информацию по найму сотрудников по месяцам за выбранный год с делением на позиции
         /// </summary>
-        Task<IList<DetailInformationByMonth>> GetDetailInformationByMonthAsync(bool isShort, bool isSignificant, int year, CancellationToken cancellationToken);
+        Task<IList<DetailInformationByMonth>> GetDetailInformationByMonthAsync(InterviewFilter filter, CancellationToken cancellationToken);
         
         /// <summary>
         /// Получает прирост сотрудников по направлениям и месяцам
