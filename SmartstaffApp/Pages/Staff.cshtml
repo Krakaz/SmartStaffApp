@@ -27,30 +27,6 @@
     }
 </div>
 <br />
-<h1>Дни рождения в этом месяце</h1>
-<div>
-    @{
-        <table class="table table-striped">
-            <tr class="table-warning" style="font-weight: bold;">
-                <th>ФИО</th>
-                <th>Дата рождения</th>
-                <th>Возраст</th>
-                <th>Направление</th>
-            </tr>
-
-            @foreach (var item in Model.BirthdayStaffs)
-            {
-            <tr>
-                <td>@item.FullName</td>
-                <td>@item.Birthday.ToString("dd.MM.yyyy")</td>
-                <td>@item.Age</td>
-                <td>@item.Direction</td>
-
-            </tr>
-            }
-        </table>
-    }
-</div>
 <br />
 <form method="get" onsubmit="submitForm()">
 
