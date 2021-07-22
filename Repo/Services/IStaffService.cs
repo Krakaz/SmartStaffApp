@@ -26,11 +26,6 @@ namespace Repo.Services
         Task<IList<Staff>> GetActiveAsync(CancellationToken cancellationToken);
 
         /// <summary>
-        /// Получает список активных сотрудников по городу
-        /// </summary>
-        Task<IList<Staff>> GetActiveByCityIdAsync(int cityId, CancellationToken cancellationToken);
-
-        /// <summary>
         /// Обновляет сотрудника
         /// </summary>
         Task<Staff> UpdateAsync(Staff staff, CancellationToken cancellationToken);
@@ -41,8 +36,8 @@ namespace Repo.Services
         Task<IList<Staff>> GetAllAsync(CancellationToken cancellationToken);
 
         /// <summary>
-        /// Получает информацию по сотрудникам по городу
+        /// Получает информацию по сотрудникам по филиалу/стриму
         /// </summary>
-        Task<IList<Staff>> GetAllByCityIdAsync(int cityId, CancellationToken cancellationToken);
+        Task<IList<Staff>> GetAllByBranchIdAsync(int branchId, CancellationToken cancellationToken);
     }
 }

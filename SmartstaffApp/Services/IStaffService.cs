@@ -26,11 +26,21 @@ namespace SmartstaffApp.Services
         Task<TotalGrowByMonthAndDirection> GetTotalGrowByMonthAndDirectionAsync(int year, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Получает прирост сотрудников по направлениям и месяцам по филиалу или стриму
+        /// </summary>
+        Task<TotalGrowByMonthAndDirection> GetTotalGrowByMonthDirectionBranchAsync(int year, int branchId, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Получает список сотрудников компании
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<IList<StaffVM>> GetStaffAsync(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Получает список сотрудников компании городу проживания
+        /// </summary>
+        Task<IList<StaffVM>> GetStaffByBranchIdAsync(int branchId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Получает список всех направлений и должностей

@@ -17,7 +17,7 @@
         @Html.TextBoxFor(m => m.Filter.Year, "", new { type = "number" })
 
         <label for="cityId" style="margin-left: 10px;">Город</label>
-        @Html.DropDownListFor(m => m.Filter.CityId, Model.CitiesFilter, new { id = "cityId", onChange = "this.form.submit()" })
+        @Html.DropDownListFor(m => m.Filter.BranchId, Model.BranchesFilter, new { id = "cityId", onChange = "this.form.submit()" })
 
         <br />
     </form>

@@ -37,7 +37,12 @@ namespace Repo.Services.Implementation
 
         public async Task<IList<Staff>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await this.repoContsext.Staffs.Include(el => el.Positions).Include(el => el.City).ToListAsync();
+            return await this.repoContsext.Staffs
+                .Include(el => el.Positions)
+                .Where(el => el.Positions.Count > 0)
+                .Include(el => el.City)
+                .Include(el => el.Groups)
+                .ToListAsync();
         }
 
         public async Task<int> InsertAsync(Staff staff, CancellationToken cancellationToken)
@@ -102,14 +107,15 @@ namespace Repo.Services.Implementation
             return staff;
         }
 
-        public async Task<IList<Staff>> GetActiveByCityIdAsync(int cityId, CancellationToken cancellationToken)
+        public async Task<IList<Staff>> GetAllByBranchIdAsync(int branchId, CancellationToken cancellationToken)
         {
-            return await this.repoContsext.Staffs.Include(el => el.Positions).Include(el => el.City).Where(el => el.IsActive == true && el.City.Id == cityId).ToListAsync();
-        }
-
-        public async Task<IList<Staff>> GetAllByCityIdAsync(int cityId, CancellationToken cancellationToken)
-        {
-            return await this.repoContsext.Staffs.Include(el => el.Positions).Include(el => el.City).Where(el => el.City.Id == cityId).ToListAsync();
+            return await this.repoContsext.Staffs
+                .Include(el => el.Positions)
+                .Where(el => el.Positions.Count > 0)
+                .Include(el => el.City)
+                .Include(el => el.Groups)
+                .Where(el => el.Groups.Any(gr => gr.Id == branchId))
+                .ToListAsync();
             
         }
     }

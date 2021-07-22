@@ -221,9 +221,100 @@ namespace SmartstaffApp.Services.Implementation
                 {
                     var totalGrowByDirection = new TotalGrowByDirection();
                     totalGrowByDirection.DirectionId = direction.Id;
-                    var shortList = staffs.Where(el => el.Positions.Any(pos => direction.Childs.Any(cpos => cpos.Id == pos.Id)));
+                    var shortList = staffs.Where(el => el.Positions.Any(pos => direction.Childs.Any(cpos => cpos.Id == pos.Id))).Distinct();
 
                     totalGrowByDirection.TotalGrowCount = 
+                        shortList.Where(el => el.FirstWorkingDate.Month == month && el.FirstWorkingDate.Year == year && !el.IsArived).Count() -
+                        shortList.Where(el => el.NotActiveDate?.Month == month && el.NotActiveDate?.Year == year).Count() +
+                        shortList.Where(el => el.ArivedDate?.Month == month && el.ArivedDate?.Year == year).Count();
+                    monthInfo.TotalGrowByDirection.Add(totalGrowByDirection);
+                }
+
+                result.Values.Add(monthInfo);
+            }
+            var totalMonthInfo = new TotalGrowByMonthAndDirectionValues()
+            {
+                Month = 13,
+                MonthName = "Итого",
+            };
+
+            foreach (var direction in positions.Where(el => el.Childs.Count != 0).OrderBy(el => el.Name))
+            {
+                var totalGrowByDirection = new TotalGrowByDirection();
+                totalGrowByDirection.DirectionId = direction.Id;
+                totalGrowByDirection.TotalGrowCount = result.Values.Sum(el => el.TotalGrowByDirection.Where(x => x.DirectionId == direction.Id).Sum(y => y.TotalGrowCount));
+                totalMonthInfo.TotalGrowByDirection.Add(totalGrowByDirection);
+            }
+
+            result.Values.Add(totalMonthInfo);
+
+
+            return result;
+        }
+
+        public async Task<IList<StaffVM>> GetStaffByBranchIdAsync(int branchId, CancellationToken cancellationToken)
+        {
+            var result = new List<StaffVM>();
+            var staffs = await this.repoStaffService.GetAllByBranchIdAsync(branchId, cancellationToken);
+            var positions = await this.positionService.GetAllAsync(cancellationToken);
+            result = staffs.Select(el => new StaffVM
+            {
+                Id = el.Id,
+                ArivedDate = el.ArivedDate,
+                Birthday = el.Birthday,
+                FirstName = el.FirstName,
+                LastName = el.LastName,
+                MiddleName = el.MiddleName,
+                FullName = el.FullName,
+                Email = el.Email,
+                Skype = el.Skype,
+                Phones = el.Phones,
+                Female = el.Female,
+                FirstWorkingDate = el.FirstWorkingDate,
+                IsActive = el.IsActive,
+                IsArived = el.IsArived,
+                NotActiveDate = el.NotActiveDate,
+                Groups = string.Join(", ", el.Groups),
+                PositionId = (int)el.Positions.FirstOrDefault()?.Id,
+                Position = el.Positions.FirstOrDefault()?.Name,
+                Direction = positions.Where(ps => ps.Childs.Any(pps => pps.Id == el.Positions.FirstOrDefault()?.Id)).FirstOrDefault()?.Name,
+                DirectionId = (int)positions.Where(ps => ps.Childs.Any(pps => pps.Id == el.Positions.FirstOrDefault()?.Id)).FirstOrDefault()?.Id,
+                IsTargetDirection = (bool)positions.Where(ps => ps.Childs.Any(pps => pps.Id == el.Positions.FirstOrDefault()?.Id)).FirstOrDefault()?.IsTarget,
+                DirectionHasRO = (bool)positions.Where(ps => ps.Childs.Any(pps => pps.Id == el.Positions.FirstOrDefault()?.Id)).FirstOrDefault()?.HasRO,
+            }).ToList();
+
+            return result;
+        }
+
+        public async Task<TotalGrowByMonthAndDirection> GetTotalGrowByMonthDirectionBranchAsync(int year, int branchId, CancellationToken cancellationToken)
+        {
+            var result = new TotalGrowByMonthAndDirection();
+
+            var positions = await this.positionService.GetAllAsync(cancellationToken);
+            foreach (var direction in positions.Where(el => el.Childs.Count != 0).OrderBy(el => el.Name))
+            {
+                result.Header.Add(new DirectionVM { Id = direction.Id, Name = direction.Name });
+            }
+
+            var staffs = await this.repoStaffService.GetAllByBranchIdAsync(branchId, cancellationToken);
+
+            var lastMonth = (DateTime.Now.Year == year) ? DateTime.Now.Month : 12;
+
+            for (int month = 1; month <= lastMonth; month++)
+            {
+                var monthInfo = new TotalGrowByMonthAndDirectionValues()
+                {
+                    Month = month,
+                    MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month),
+                };
+
+                foreach (var direction in positions.Where(el => el.Childs.Count != 0).OrderBy(el => el.Name))
+                {
+                    var totalGrowByDirection = new TotalGrowByDirection();
+                    totalGrowByDirection.DirectionId = direction.Id;
+                    var shortList = staffs.Where(el => el.Positions.Any(pos => direction.Childs.Any(cpos => cpos.Id == pos.Id)));
+
+                    totalGrowByDirection.TotalGrowCount =
                         shortList.Where(el => el.FirstWorkingDate.Month == month && el.FirstWorkingDate.Year == year && !el.IsArived).Count() -
                         shortList.Where(el => el.NotActiveDate?.Month == month && el.NotActiveDate?.Year == year).Count() +
                         shortList.Where(el => el.ArivedDate?.Month == month && el.ArivedDate?.Year == year).Count();
