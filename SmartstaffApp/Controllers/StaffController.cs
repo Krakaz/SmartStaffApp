@@ -16,10 +16,13 @@ namespace SmartstaffApp.Controllers
     public class StaffController : ControllerBase
     {
         private readonly DataLoader.Maketalents.Services.IMaketalentsService maketalentsService;
+        private readonly IApplicantsService applicantsService;
 
-        public StaffController(DataLoader.Maketalents.Services.IMaketalentsService maketalentsService)
+        public StaffController(DataLoader.Maketalents.Services.IMaketalentsService maketalentsService,
+            IApplicantsService applicantsService)
         {
             this.maketalentsService = maketalentsService;
+            this.applicantsService = applicantsService;
         }
 
         /// <summary>
@@ -45,5 +48,16 @@ namespace SmartstaffApp.Controllers
             await this.maketalentsService.LoadIntervievInformationAsync(year, cancellationToken);
             return Ok();
         }
+
+        /// <summary>
+        /// Загружает информацию из МТ по соискателям
+        /// </summary>
+        [HttpPost("LoadApplicants")]
+        public async Task<IActionResult> LoadApplicants(CancellationToken cancellationToken)
+        {
+            await this.applicantsService.GetApplicantsListAsync(cancellationToken);
+            return Ok();
+        }
+
     }
 }

@@ -1,9 +1,11 @@
 ﻿using DataLoader.Maketalents.Models;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,9 +37,10 @@ namespace DataLoader.Maketalents.Services.Implementation
             this.messageService = messageService;
         }
 
-        private async Task<HttpRequestMessage> GetHttpRequestMessageAsync(string requestStr)
+        private async Task<HttpRequestMessage> GetHttpRequestMessageAsync(string requestStr) => await AddHttpRequestMessageHeader(new HttpRequestMessage(HttpMethod.Get, requestStr));
+
+        private async Task<HttpRequestMessage> AddHttpRequestMessageHeader(HttpRequestMessage request)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, requestStr);
             request.Headers.Add("Accept", "application/json, text/plain, */*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36");
@@ -51,9 +54,9 @@ namespace DataLoader.Maketalents.Services.Implementation
             }
 
             request.Headers.Add("Authorization", "Bearer " + authToken);
+
             return request;
         }
-
 
         public async Task LoadIntervievInformationAsync(int year, CancellationToken cancellationToken)
         {
@@ -193,6 +196,34 @@ namespace DataLoader.Maketalents.Services.Implementation
             }
 
             logger.LogInformation("MaketalentsService Start FiredStaff Data Loaded");
+        }
+
+        public async Task<ApplicantsResponce> LoadApplicantsAsync(CancellationToken cancellationToken)
+        {
+            var requestSTR = $"https://smartstaff.simbirsoft1.com/rest/employee/applicantList";
+            var parametersToAdd = new ApplicantsRequest
+            {
+                conjunctionRestrictions = new List<ConjunctionRestriction>
+                {
+                    new ConjunctionRestriction { field = "city", @operator = "EQUALS", value = "Краснодар" },
+                    new ConjunctionRestriction { field = "status", @operator = "LIKE", value = "%оффер" },
+                },
+                disjunctionRestrictions = new List<object>(),
+                sortOrders = new List<SortOrder> { new SortOrder { field = "id", direction = "ASC" } }
+            };
+
+            var str = JsonSerializer.Serialize(parametersToAdd);
+            var content = new StringContent(JsonSerializer.Serialize(parametersToAdd), Encoding.UTF8, "application/json");
+            var request = await this.AddHttpRequestMessageHeader(new HttpRequestMessage(HttpMethod.Post, requestSTR) { Content = content });
+            var client = clientFactory.CreateClient();
+
+            logger.LogInformation("MaketalentsService Start Applicants Data Request");
+            var response = await client.SendAsync(request);
+
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            var requestResult = await JsonSerializer.DeserializeAsync<ApplicantsResponce>(responseStream);
+
+            return requestResult;
         }
     }
 }

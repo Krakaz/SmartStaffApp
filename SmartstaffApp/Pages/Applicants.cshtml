@@ -1,0 +1,57 @@
+﻿@page
+@model ApplicantModel
+@{
+    ViewData["Title"] = "Staff";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Соискатели</h1>
+
+<form method="get" onsubmit="submitForm()">
+    <div>
+        @{ var index = 0;}
+        <table class="table table-striped" style="font-size: 12px;">
+            <tr class="table-primary" style="font-weight: bold;">
+                <td>№</td>
+                <td>
+                    ФИО
+                </td>
+                <td>
+                    Позиция
+                </td>
+                <td>
+                    Английский
+                </td>
+                <td>
+                    Статус
+                </td>
+                <td>
+                    Последняя активность
+                </td>
+                <td>
+                    Email
+                </td>
+                <td>
+                    Телефон
+                </td>
+            </tr>
+            @foreach (var row in @Model.Applicants)
+            {
+                index++;
+
+            <tr>
+                <td>@index</td>
+                <td><a href="https://smartstaff.simbirsoft1.com/pages/employee/view.xhtml?id=@row.Id" target="_blank">@row.FullName</a></td>
+                <td>@row.Position</td>
+                <td>@row.EnglishLevel</td>
+                <td>@row.Status</td>
+                <td>@row.LastActivity.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@row.Email</td>
+                <td>@row.Phone</td>
+            </tr>
+
+            }
+
+        </table>
+    </div>
+</form>
