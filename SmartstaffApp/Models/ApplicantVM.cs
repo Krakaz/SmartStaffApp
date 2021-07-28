@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SmartstaffApp.Models
 {
-    public class Applicant
+    public class ApplicantVM
     {
         public int Id { get; set; }
         public string FullName { get; set; }

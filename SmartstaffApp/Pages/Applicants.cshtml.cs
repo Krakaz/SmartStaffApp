@@ -14,7 +14,7 @@ namespace SmartstaffApp.Pages
         private readonly ILogger<IndexModel> logger;
         private readonly IApplicantsService applicantsService;
 
-        public IList<Applicant> Applicants { get; set; }
+        public IList<ApplicantVM> Applicants { get; set; }
 
         public ApplicantModel(ILogger<IndexModel> logger,
             IApplicantsService applicantsService)

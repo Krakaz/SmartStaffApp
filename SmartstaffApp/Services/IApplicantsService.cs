@@ -6,8 +6,21 @@ using System.Threading.Tasks;
 
 namespace SmartstaffApp.Services
 {
+    /// <summary>
+    /// Интерфейс логики работы с соискателями
+    /// </summary>
     public interface IApplicantsService
     {
-        Task<IList<Applicant>> GetApplicantsListAsync(CancellationToken cancellationToken);
+        /// <summary>
+        /// Получает всех соискателей из БД
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IList<ApplicantVM>> GetApplicantsListAsync(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Загружает информацию по соискателям в БД
+        /// </summary>
+        Task LoafApplicantsAsync(CancellationToken cancellationToken);
     }
 }

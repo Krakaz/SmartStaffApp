@@ -55,7 +55,7 @@ namespace SmartstaffApp.Controllers
         [HttpPost("LoadApplicants")]
         public async Task<IActionResult> LoadApplicants(CancellationToken cancellationToken)
         {
-            await this.applicantsService.GetApplicantsListAsync(cancellationToken);
+            await this.applicantsService.LoafApplicantsAsync(cancellationToken);
             return Ok();
         }
 

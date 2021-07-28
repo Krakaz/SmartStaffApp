@@ -17,6 +17,8 @@ namespace Repo.Models
         public DbSet<Employee> Employees { get; set; }
         public DbSet<NotificationEmail> NotificationEmails { get; set; }
         public DbSet<NotificationType> NotificationTypes { get; set; }
+        public DbSet<Applicant> Applicants { get; set; }
+
 
         public RepoContext(DbContextOptions<RepoContext> options)
             : base(options)
