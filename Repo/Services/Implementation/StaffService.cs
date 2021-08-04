@@ -32,7 +32,7 @@ namespace Repo.Services.Implementation
 
         public async Task<Staff> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await this.repoContsext.Staffs.FindAsync(id);
+            return await this.repoContsext.Staffs.Include(el => el.Positions).Where(el => el.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<IList<Staff>> GetAllAsync(CancellationToken cancellationToken)
