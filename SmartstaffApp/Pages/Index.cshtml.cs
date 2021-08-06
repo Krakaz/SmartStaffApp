@@ -27,6 +27,8 @@ namespace SmartstaffApp.Pages
         public IList<InformationByMonth> InformationByMonth { get; set; }
         public IList<SelectListItem> BranchesFilter { get; set; }
 
+        public IList<StaffTurnoverByMonth> StaffTurnoverByMonths { get; set; }
+
         public TotalGrowByMonthAndDirection TotalGrowByMonthAndDirection { get; set; }
 
         public IList<ShortActiveStaffVM> ShortActiveStaffs { get; set; }
@@ -97,6 +99,7 @@ namespace SmartstaffApp.Pages
         {
             this.CurrentData = await this.staffService.GetCurrentDataAsync(cancellationToken);
             this.InformationByMonth = await this.staffService.GetInformationByMonthAsync(filter.Year, cancellationToken);
+            this.StaffTurnoverByMonths = await this.staffService.GetStaffTurnoverByMonth(filter.Year, cancellationToken);
             this.TotalGrowByMonthAndDirection = filter.BranchId == 0 ? await this.staffService.GetTotalGrowByMonthAndDirectionAsync(filter.Year, cancellationToken) : await this.staffService.GetTotalGrowByMonthDirectionBranchAsync(filter.Year, filter.BranchId, cancellationToken);
             this.BranchesFilter = (await this.groupService.GetBranchesAsync(cancellationToken)).Select(el => new SelectListItem { Value = el.Id.ToString(), Text = el.Name }).OrderBy(el => el.Text).ToList();
             this.BranchesFilter.Insert(0, new SelectListItem { Value = "0", Text = "Все" });

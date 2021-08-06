@@ -76,6 +76,43 @@ namespace SmartstaffApp.Services.Implementation
             return result.OrderBy(el => el.Month).ToList();
         }
 
+        public async Task<IList<StaffTurnoverByMonth>> GetStaffTurnoverByMonth(int year, CancellationToken cancellationToken)
+        {
+            var result = new List<StaffTurnoverByMonth>();
+            var staffs = await this.repoStaffService.GetAllAsync(cancellationToken);
+            var positions = await this.positionService.GetAllAsync(cancellationToken);
+
+            foreach(var direction in positions.Where(el => el.IsTarget))
+            {
+                var item = new StaffTurnoverByMonth { DirectionId = direction.Id, DirectionName = direction.Name };
+                for (int month = 1; month <= 12; month++)
+                {
+                    var monthStart = new DateTime(year, month, 1);
+                    var monthEnd = monthStart.AddMonths(1);
+                    var info = new StaffTurnoverDetail() { MonthId = month };
+                    info.MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+                    info.StartCount = staffs.Where(el => direction.Childs.Any(dpos => el.Positions.Any(pos => pos.Id == dpos.Id)) && el.FirstWorkingDate <= monthStart && (el.ArivedDate is null || el.ArivedDate <= monthStart) && (el.NotActiveDate is null || el.NotActiveDate >= monthStart)).Count();
+                    info.EndCount = staffs.Where(el => direction.Childs.Any(dpos => el.Positions.Any(pos => pos.Id == dpos.Id)) && el.FirstWorkingDate <= monthEnd && (el.ArivedDate is null || el.ArivedDate <= monthEnd) && (el.NotActiveDate is null || el.NotActiveDate >= monthEnd)).Count();
+                    info.FiredCount = staffs.Where(el => direction.Childs.Any(dpos => el.Positions.Any(pos => pos.Id == dpos.Id)) && el.NotActiveDate?.Month == month && el.NotActiveDate?.Year == year).Count();
+                    item.StaffTurnoverDetails.Add(info);
+                }
+
+                var infoYear = new StaffTurnoverDetail() 
+                { 
+                    MonthId = 13, 
+                    MonthName = "Год", 
+                    StartCount = item.StaffTurnoverDetails.First().StartCount,
+                    EndCount = item.StaffTurnoverDetails.Last().EndCount,
+                    FiredCount = item.StaffTurnoverDetails.Sum(el => el.FiredCount)
+                };
+                item.StaffTurnoverDetails.Add(infoYear);
+
+                result.Add(item);
+            }
+
+            return result;
+        }
+
         public async Task<IList<DetailInformationByMonth>> GetDetailInformationByMonthAsync(InterviewFilter filter, CancellationToken cancellationToken)
         {
             var result = new List<DetailInformationByMonth>();

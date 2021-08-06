@@ -16,6 +16,11 @@ namespace SmartstaffApp.Services
         Task<IList<InformationByMonth>> GetInformationByMonthAsync(int year, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Получает информацию по текучке кандров по направлениям по месяцам за год
+        /// </summary>
+        Task<IList<StaffTurnoverByMonth>> GetStaffTurnoverByMonth(int year, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Получает сводную информацию по найму сотрудников по месяцам за выбранный год с делением на позиции
         /// </summary>
         Task<IList<DetailInformationByMonth>> GetDetailInformationByMonthAsync(InterviewFilter filter, CancellationToken cancellationToken);

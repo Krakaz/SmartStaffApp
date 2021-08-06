@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Globalization;
 @model IndexModel
 @{
     ViewData["Title"] = "Index";
@@ -135,6 +136,37 @@
 
 
             </table>
+        }
+    </div>
+    <br>
+    <br>
+
+    <p><h3>Текучесть кадров</h3></p>
+    <div>
+        @{
+                <table class="table table-striped">
+                    <tr class="table-primary" style="font-weight: bold;">
+                        <th>Месяц</th>
+                        @for (int month = 1; month <= 12; month++)
+                        {
+                            <th>@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month)</th>
+                        }
+                        <th>Год</th>
+                    </tr>
+
+                    @foreach (var item in Model.StaffTurnoverByMonths)
+                    {
+                        <tr>
+                            <td>@item.DirectionName</td>
+                            @foreach (var monthInfo in item.StaffTurnoverDetails)
+                            {
+                                var cellClass = monthInfo.StaffTurnover > 0.13 ? "class = table-danger" : monthInfo.StaffTurnover > 0.0 ? "class = table-success" : "";
+                                <td @cellClass>@monthInfo.StaffTurnover.ToString("P1")</td>
+                            }
+                        </tr>
+                    }
+
+                </table>
         }
     </div>
 
