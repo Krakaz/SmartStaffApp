@@ -112,7 +112,7 @@ namespace SmartstaffApp.Pages
                 IsTarget = cl.First().IsTargetDirection,
                 HasRO = cl.First().DirectionHasRO,
                 StaffCount = cl.Count()
-            }).ToList();
+            }).OrderByDescending(el => el.StaffCount).ToList();
 
             var chatMembers = await this.chatService.GetMainChatMembersAsync(cancellationToken);
             if (chatMembers.ok)
