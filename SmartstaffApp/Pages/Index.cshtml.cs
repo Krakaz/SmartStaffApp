@@ -118,6 +118,12 @@ namespace SmartstaffApp.Pages
             if (chatMembers.ok)
             {
                 this.UsersLooseInChat = staff.Where(el => el.IsActive == true && !chatMembers.members.Any(m => m.userId == el.Email)).Select(el => el.Direction + ": " + el.FullName).ToList();
+                
+                // Костыль увольнения пользоватетей
+                foreach(var user in staff.Where(el => el.IsActive == true && !chatMembers.members.Any(m => m.userId == el.Email) && el.FirstWorkingDate <= DateTime.Now.Date.AddDays(-14)))
+                {
+
+                }
             }
             var chanalMembers = await this.chatService.GetMainChanalMembersAsync(cancellationToken);
             if (chanalMembers.ok)
