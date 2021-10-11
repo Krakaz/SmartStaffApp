@@ -20,6 +20,7 @@ namespace Repo
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<INotificationEmailsService, NotificationEmailsService>();
             services.AddScoped<IApplicantService, ApplicantService>();
+            services.AddScoped<INotificationLogsService, NotificationLogsService>();
 
             return services;
         }

@@ -7,7 +7,7 @@ namespace Repo.Models
     public class NotificationLog
     {
         public int Id { get; set; }
-        public DateTime MyProperty { get; set; }
+        public DateTime Date { get; set; }
         public NotificationType NotificationType { get; set; }
     }
 }
