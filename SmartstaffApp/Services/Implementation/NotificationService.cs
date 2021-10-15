@@ -31,11 +31,11 @@ namespace SmartstaffApp.Services.Implementation
             var startDate = await this.notificationLogsService.GetLastDateBirthdayNotificationAsync(cancellationToken);
             var endDate = DateTime.Now.Date;
 
-            while(startDate != endDate)
+            for(DateTime birthDate = startDate.AddDays(1); birthDate <= endDate; birthDate = birthDate.AddDays(1))
             {
                 var staffList = await this.staffService.GetStaffAsync(cancellationToken);
                 var staffs = staffList.Where(el => el.IsActive)
-                    .Where(el => el.Birthday?.Month == startDate.Month && el.Birthday?.Day == startDate.Day)
+                    .Where(el => el.Birthday?.Month == birthDate.Month && el.Birthday?.Day == birthDate.Day)
                     .Select(el => new
                     {
                         Birthday = el.Birthday.Value,
@@ -77,7 +77,6 @@ namespace SmartstaffApp.Services.Implementation
 
                     await this.messageService.SendMessageToLeadersAsync(3, msg, cancellationToken);
                 }
-                startDate = startDate.AddDays(1);
             }
             await this.notificationLogsService.InsertBirthdayLogAsync(cancellationToken);
         }

@@ -44,7 +44,7 @@ namespace DataLoader.MyTeam.Services.Implementation
         public async Task SendMessageToLeadersAsync(int messageTypeId, string text, CancellationToken cancellationToken)
         {
             var emails = await this.notificationEmailsService.GetAllAsync(cancellationToken);
-            foreach(var email in emails.Where(el => el.Id == 1)) //Where(el => el.NotificationTypes.Any(tp => tp.Id == messageTypeId)))
+            foreach(var email in emails.Where(el => el.NotificationTypes.Any(tp => tp.Id == messageTypeId)))
             {
                 await this.SendMessage(email.Email, text, cancellationToken);
             }
