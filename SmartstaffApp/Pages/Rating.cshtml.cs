@@ -17,14 +17,8 @@ namespace SmartstaffApp.Pages
     /// <summary>
     /// Текущие данные по сотрудникам
     /// </summary>
-    public class IndexModel : PageModel
+    public class RatingModel : PageModel
     {
-        /// <summary>
-        /// Текущее количество сотрудников + планы
-        /// </summary>
-        public CurrentDataViewModel CurrentData { get; set; }
-
-        public IList<InformationByMonth> InformationByMonth { get; set; }
         public IList<SelectListItem> BranchesFilter { get; set; }
 
         public IList<StaffTurnoverByMonth> StaffTurnoverByMonths { get; set; }
@@ -36,16 +30,16 @@ namespace SmartstaffApp.Pages
         public IList<string> UsersLooseInChat { get; set; } = new List<string>();
         public IList<string> UsersLooseInChanal { get; set; } = new List<string>();
 
-        public IndexFilter Filter { get; set; } = new IndexFilter();
+        public RatingFilter Filter { get; set; } = new RatingFilter();
         public string JsonStaffChart { get; set; }
 
-        private readonly ILogger<IndexModel> _logger;
+        private readonly ILogger<RatingModel> _logger;
         private readonly IStaffService staffService;
         private readonly DataLoader.Maketalents.Services.IMaketalentsService maketalentsService;
         private readonly Repo.Services.IGroupService groupService;
         private readonly DataLoader.MyTeam.Services.IChatService chatService;
 
-        public IndexModel(ILogger<IndexModel> logger, 
+        public RatingModel(ILogger<RatingModel> logger, 
             IStaffService staffService, 
             DataLoader.Maketalents.Services.IMaketalentsService maketalentsService,
             Repo.Services.IGroupService groupService,
@@ -59,11 +53,11 @@ namespace SmartstaffApp.Pages
         }
 
 
-        public async Task OnGet(IndexFilter filter, CancellationToken cancellationToken)
+        public async Task OnGet(RatingFilter filter, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(HttpContext.Request.QueryString.ToString()))
             {
-                var sessionFilter = HttpContext.Session.Get<IndexFilter>("IndexFilter");
+                var sessionFilter = HttpContext.Session.Get<RatingFilter>("RatingFilter");
                 if (sessionFilter != null)
                 {
                     filter = sessionFilter;
@@ -73,38 +67,20 @@ namespace SmartstaffApp.Pages
             await this.FillPageData(filter, cancellationToken);
             this.Filter = filter;
 
-            HttpContext.Session.Set<IndexFilter>("IndexFilter", filter);
+            HttpContext.Session.Set<RatingFilter>("RatingFilter", filter);
         }
 
-        private async Task UpdateHeading(MouseEventArgs e)
+        private async Task FillPageData(RatingFilter filter, CancellationToken cancellationToken)
         {
-            this.CurrentData = await this.staffService.GetCurrentDataAsync(CancellationToken.None);
-            
-        }
-        public async Task OnPostUpdateInterview(CancellationToken cancellationToken)
-        {
-            var year = DateTime.Now.Year;
-            await this.maketalentsService.LoadIntervievInformationAsync(year, cancellationToken);
-            await this.FillPageData(this.Filter, cancellationToken);
-        }
-        public async Task OnPostUpdateStaff(CancellationToken cancellationToken)
-        {
-            var year = DateTime.Now.Year;
-            await this.maketalentsService.LoadNewStaffAsync(cancellationToken);            
-            await this.maketalentsService.UpdateFiredStaffAsync(year, cancellationToken);
-            await this.FillPageData(this.Filter, cancellationToken);
-        }
-
-        private async Task FillPageData(IndexFilter filter, CancellationToken cancellationToken)
-        {
-            this.CurrentData = await this.staffService.GetCurrentDataAsync(cancellationToken);
-            this.InformationByMonth = await this.staffService.GetInformationByMonthAsync(filter.Year, cancellationToken);
             this.StaffTurnoverByMonths = await this.staffService.GetStaffTurnoverByMonth(filter.Year, cancellationToken);
             this.TotalGrowByMonthAndDirection = filter.BranchId == 0 ? await this.staffService.GetTotalGrowByMonthAndDirectionAsync(filter.Year, cancellationToken) : await this.staffService.GetTotalGrowByMonthDirectionBranchAsync(filter.Year, filter.BranchId, cancellationToken);
+
+
             this.BranchesFilter = (await this.groupService.GetBranchesAsync(cancellationToken)).Select(el => new SelectListItem { Value = el.Id.ToString(), Text = el.Name }).OrderBy(el => el.Text).ToList();
             this.BranchesFilter.Insert(0, new SelectListItem { Value = "0", Text = "Все" });
-            var staff = filter.BranchId == 0 ? await this.staffService.GetStaffAsync(cancellationToken) : await this.staffService.GetStaffByBranchIdAsync(filter.BranchId, cancellationToken);
 
+
+            var staff = filter.BranchId == 0 ? await this.staffService.GetStaffAsync(cancellationToken) : await this.staffService.GetStaffByBranchIdAsync(filter.BranchId, cancellationToken);
             this.ShortActiveStaffs = staff.Where(el => el.IsActive).GroupBy(el => el.Direction).Select(cl => new ShortActiveStaffVM
             {
                 DirectionId = cl.First().DirectionId,
@@ -118,6 +94,12 @@ namespace SmartstaffApp.Pages
             if (chatMembers.ok)
             {
                 this.UsersLooseInChat = staff.Where(el => el.IsActive == true && !chatMembers.members.Any(m => m.userId == el.Email)).Select(el => el.Direction + ": " + el.FullName).ToList();
+                
+                // Костыль увольнения пользоватетей
+                foreach(var user in staff.Where(el => el.IsActive == true && !chatMembers.members.Any(m => m.userId == el.Email) && el.FirstWorkingDate <= DateTime.Now.Date.AddDays(-14)))
+                {
+
+                }
             }
             var chanalMembers = await this.chatService.GetMainChanalMembersAsync(cancellationToken);
             if (chanalMembers.ok)
@@ -130,7 +112,7 @@ namespace SmartstaffApp.Pages
     /// <summary>
     /// Фильтр
     /// </summary>
-    public class IndexFilter
+    public class RatingFilter
     {
         /// <summary>
         /// Год

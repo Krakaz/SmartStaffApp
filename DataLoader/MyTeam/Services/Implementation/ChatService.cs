@@ -16,13 +16,19 @@ namespace DataLoader.MyTeam.Services.Implementation
         {
             this.clientFactory = clientFactory;
         }
-        private async Task<ChatMembers> GetChatMembersAsync(string chatId, CancellationToken cancellationToken)
+        private async Task<ChatMembers> GetChatMembersAsync(string chatId, string cursor, CancellationToken cancellationToken)
         {
             var requestSTR = BotInfo.ApiUrl + "/chats/getMembers";
             var parametersToAdd = new Dictionary<string, string> {
                 { "token", BotInfo.Token },
                 { "chatId", chatId },
             };
+
+            if(!string.IsNullOrEmpty(cursor))
+            {
+                parametersToAdd.Add("cursor", cursor);
+            }
+
             requestSTR = QueryHelpers.AddQueryString(requestSTR, parametersToAdd);
 
             var request = new HttpRequestMessage(HttpMethod.Get, requestSTR);
@@ -37,14 +43,37 @@ namespace DataLoader.MyTeam.Services.Implementation
             return requestResult;
         }
 
-        public Task<ChatMembers> GetMainChanalMembersAsync(CancellationToken cancellationToken)
+        public async Task<ChatMembers> GetMainChanalMembersAsync(CancellationToken cancellationToken)
         {
-            return this.GetChatMembersAsync(BotInfo.MainChanalId, cancellationToken);
+            var result = await this.GetChatMembersAsync(BotInfo.MainChanalId, "", cancellationToken);
+            var cursor = result.cursor;
+            while(!string.IsNullOrEmpty(cursor))
+            {
+                var secondResult = await this.GetChatMembersAsync(BotInfo.MainChanalId, result.cursor, cancellationToken);
+                foreach (var m in secondResult.members)
+                {
+                    result.members.Add(m);
+                }
+                cursor = secondResult.cursor;
+            }
+            return result;
         }
 
-        public Task<ChatMembers> GetMainChatMembersAsync(CancellationToken cancellationToken)
+        public async Task<ChatMembers> GetMainChatMembersAsync(CancellationToken cancellationToken)
         {
-            return this.GetChatMembersAsync(BotInfo.MainChatId, cancellationToken);
+            var result = await this.GetChatMembersAsync(BotInfo.MainChatId, "", cancellationToken);
+            var cursor = result.cursor;
+            while (!string.IsNullOrEmpty(cursor))
+            {
+                var secondResult = await this.GetChatMembersAsync(BotInfo.MainChatId, result.cursor, cancellationToken);
+                foreach (var m in secondResult.members)
+                {
+                    result.members.Add(m);
+                }
+                cursor = secondResult.cursor;
+            }
+
+            return result;
         }
     }
 }

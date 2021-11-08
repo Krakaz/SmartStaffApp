@@ -5,6 +5,7 @@ namespace DataLoader.MyTeam.Models
     public class ChatMembers
     {
         public IList<Members> members { get; set; }
+        public string cursor { get; set; }
         public bool ok { get; set; }
     }
 
