@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataLoader\DataLoader.csproj" />
+    <ProjectReference Include="..\GoogleSheetsWorker\GoogleSheetsWorker.csproj" />
     <ProjectReference Include="..\Repo\Repo.csproj" />
   </ItemGroup>
 

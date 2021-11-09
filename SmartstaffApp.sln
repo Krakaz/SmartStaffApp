@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repo", "Repo\Repo.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLoader", "DataLoader\DataLoader.csproj", "{1019F8F9-606C-4065-8111-483D54F28D1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleSheetsWorker", "GoogleSheetsWorker\GoogleSheetsWorker.csproj", "{D7B2DF92-94F4-48E3-B248-715CAD489789}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{1019F8F9-606C-4065-8111-483D54F28D1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1019F8F9-606C-4065-8111-483D54F28D1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1019F8F9-606C-4065-8111-483D54F28D1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7B2DF92-94F4-48E3-B248-715CAD489789}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7B2DF92-94F4-48E3-B248-715CAD489789}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7B2DF92-94F4-48E3-B248-715CAD489789}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7B2DF92-94F4-48E3-B248-715CAD489789}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

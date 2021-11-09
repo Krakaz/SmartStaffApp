@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DataLoader;
+using GoogleSheetsWorker;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -36,6 +37,7 @@ namespace SmartstaffApp
             services.AddControllersWithViews();
             services.AddRepositoryCollection(Configuration.GetConnectionString("DefaultConnection"));
             services.AddDataLoaderCollection();
+            services.AddGoogleSheetsWorkerCollection();
 
             services.AddScoped<IStaffService, StaffService>();
             services.AddScoped<IEmployeeService, EmployeeService>();

@@ -26,6 +26,11 @@ namespace Repo.Services.Implementation
             return await this.repoContsext.Positions.FindAsync(id);
         }
 
+        public async Task<Position> GetDirectionByPositionIdAsync(int positionId, CancellationToken cancellationToken)
+        {
+            return await this.repoContsext.Positions.Where(el => el.Childs.Any(position => position.Id == positionId)).FirstOrDefaultAsync();            
+        }
+
         public async Task<int> InsertAsync(Position position, CancellationToken cancellationToken)
         {
             var grp = await this.repoContsext.Positions.FindAsync(position.Id);

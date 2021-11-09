@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "smartstaffapp",
+  "private_key_id": "09c6e2af3edc03e2418daf004a7ccabca2556019",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCVQYymWmfL5eg7\nwmxeh9U1ibInEBL/Hbs2zMWQXenFXgKyeW++s9vm8gbDv0GQWmsl/QD0l8szVD7/\neW0JzNIstVL6i6jZhTQKBu0/Py8zdOIlqDsC1NFuJerE2uGnwjvX8kGrBq4lPdGT\n03q/5rWbIVVhOfzP6RVFlufogx1D4Ft6HrLoTmqUwO/szrjsfoFZ1JtYDd90wjuP\nbbwxeSQ7xzB1KyN0MDu34ys7c2Ls4Efbg99tncBZBjobVopIL9kkyssSJ8Hajet4\ngut/TA9DcFVRPGSc0Ct0ddn0rSJOQcFv0drrWlqOkAseqturLE0Utxexg/rPDiMX\n3MSqNDWjAgMBAAECggEABh5KRDV3hMm3Y9+77oIV8Nxko6pKhQ+0cXIidSEMaK1K\nYgONW51m2cg5E8QezWqPct60r9IbH88HyBQzro+pW/DQ5nlcIhKOSAzxo8KUzkCv\n1ohXZu3Pafr+7TPlxSk2p8sD+x1KfTdUBIHKSdyMvD+5DsPAQ8uTticR+ZuKUxJq\n06uXWBqbarY+ukhFPBQM3vhpsZHKleqbhW3F4pcjDmIRPQYCkH/h/ju2I7hw+qO3\nTew3jpA2vhzwVHlvVIYb9QJzu+F4MMwxRlRywATmVqB8foshjN/c+YT9owXhYiqm\nXaoaX5XRwg+1jCViyCHXpzySMYdsVdUhVQP/ZatL2QKBgQDLaRQIQfWxVOz/4X30\nVcZgejdhtt8tPHzB8lnZKiazQh50yU68ISX5VJVxGLBE/MP/7nOtOE9bRXB4N9Vj\nBoaIGljgjDl/9m/ITwCXxjdZHEWjp/WZq+wBhKoQyMaHyCzkI9KDpgAcEVxNm4XR\nRQcFCyds22nOaNR1s91CQrZqmwKBgQC72DVO3Z7Cv4C03Z+erV8VY5DGI2Y8d7eL\nbfnLdQAMTFABXkUrAQwF3eyKyFKzrjKuBHSKLtkoTBNPHl6ImbdftE9x8q+xHkGs\nke1U3pyD4mIYJOeu4I6bS/5e322LgspwWVdWupcOC3mgRYuUtmqsg7QHEZm71gFY\nL7ML5MftmQKBgQCjVCForAXrOSUAJYCsg39BkoELrfov6YTHeqDYdjcS8wFfhxD4\nkKlcNaW1ZTyMeGWtCDvMGA3oXK59aV+nHuNBP96jlxTIggmpzn3MYLWqkL/+M+xK\nUziy02J3DbAT8RDSs0zitpUZ9HqoOjvOGF4Vl6o1h0zDF3uZcy4zeTveBwKBgG+P\nRomiIUm0BjJkdQn+GTxQt4iVOYCr8PwDwpjM0cx7/f/yBs41fvh1BqidtFA2Iq8q\nwjPXAu1l0QnqFWa3NCrIoW4hHarpN0PQHs2KsBW7e1qvgFFh2A/vIBEkTKDQen4i\n8TX29wNGWWOQKgeWFuCCD4crMsxVmtLO8V0c8IfxAoGAKKQkwAmeEFlVKU/MaQZY\n2WGEpVbyHNfpACad6uMq80ZTj6VUUV+wV2LNwIr5hlJeN4shPBSdWGoW5griJldj\nD9vypcqxfltLtgMWFJI1wB1Eg0Rg54tXeU32DqzSgw32voX7aeVQ8rCQP2E+R+en\npp0DbGxeh8WMdiNLQ7cyObc=\n-----END PRIVATE KEY-----\n",
+  "client_email": "smartstaffapp@smartstaffapp.iam.gserviceaccount.com",
+  "client_id": "113325529480324826644",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/smartstaffapp%40smartstaffapp.iam.gserviceaccount.com"
+}

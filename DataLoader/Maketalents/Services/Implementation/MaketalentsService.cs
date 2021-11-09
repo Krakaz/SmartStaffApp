@@ -20,6 +20,8 @@ namespace DataLoader.Maketalents.Services.Implementation
         private readonly Repo.Services.IInterviewService repoInterviewService;
         private readonly Repo.Services.IStaffService repoStaffService;
         private readonly MyTeam.Services.IMessageService messageService;
+        private readonly GoogleSheetsWorker.Services.INewStaffService googleSheetsNewStaffService;
+        private readonly Repo.Services.IPositionService repoPositionService;
         private string authToken = "";
 
         public MaketalentsService(ILogger<MaketalentsService> logger, 
@@ -27,7 +29,9 @@ namespace DataLoader.Maketalents.Services.Implementation
             IAuthService authService,
             Repo.Services.IInterviewService repoInterviewService,
             Repo.Services.IStaffService repoStaffService,
-            DataLoader.MyTeam.Services.IMessageService messageService)
+            DataLoader.MyTeam.Services.IMessageService messageService,
+            GoogleSheetsWorker.Services.INewStaffService googleSheetsNewStaffService,
+            Repo.Services.IPositionService repoPositionService)
         {
             this.logger = logger;
             this.clientFactory = clientFactory;
@@ -35,6 +39,8 @@ namespace DataLoader.Maketalents.Services.Implementation
             this.repoInterviewService = repoInterviewService;
             this.repoStaffService = repoStaffService;
             this.messageService = messageService;
+            this.googleSheetsNewStaffService = googleSheetsNewStaffService;
+            this.repoPositionService = repoPositionService;
         }
 
         private async Task<HttpRequestMessage> GetHttpRequestMessageAsync(string requestStr) => await AddHttpRequestMessageHeader(new HttpRequestMessage(HttpMethod.Get, requestStr));
@@ -152,10 +158,12 @@ namespace DataLoader.Maketalents.Services.Implementation
 
                     dtoStaff.City = new Repo.Models.City { Name = sourceStaff.city };
 
-                    var staff = await this.repoStaffService.GetByIdAsync(sourceStaff.id, cancellationToken);
+                    var staff = await this.repoStaffService.GetByIdAsync(sourceStaff.id, cancellationToken);                    
                     if(staff is null)
                     {
                         await this.messageService.SendMessageToLeadersAsync(1, $"{dtoStaff.FullName} новый сотрудник. На позиции {string.Join(", ", dtoStaff.Positions.Select(el => el.Name))}", cancellationToken);
+                        var direction = await this.repoPositionService.GetDirectionByPositionIdAsync(dtoStaff.Positions.FirstOrDefault().Id, cancellationToken);
+                        this.googleSheetsNewStaffService.AddNewStaffToSheetAsync(dtoStaff.FullName, dtoStaff.FirstWorkingDate, direction?.Name);
                     }
 
                     await this.repoStaffService.InsertAsync(dtoStaff, cancellationToken);                    

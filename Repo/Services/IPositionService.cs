@@ -26,5 +26,7 @@ namespace Repo.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<IList<Position>> GetAllAsync(CancellationToken cancellationToken);
+
+        Task<Position> GetDirectionByPositionIdAsync(int positionId, CancellationToken cancellationToken);
     }
 }
