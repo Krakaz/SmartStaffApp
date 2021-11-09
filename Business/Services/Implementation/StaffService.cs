@@ -14,19 +14,19 @@ namespace Business.Services.Implementation
         private readonly Repo.Services.IStaffService repoStaffService;
         private readonly Repo.Services.IPositionService repoPositionService;
         private readonly GoogleSheetsWorker.Services.INewStaffService googleSheetsNewStaffService;
-        private readonly MessageService messageService;
+        private readonly IMessageService messageService;
 
         public StaffService(DataLoader.Maketalents.Services.IMaketalentsService maketalentsService,
             Repo.Services.IStaffService repoStaffService,
             Repo.Services.IPositionService repoPositionService,
             GoogleSheetsWorker.Services.INewStaffService googleSheetsNewStaffService,
-            MessageService messageService)
+            IMessageService messageService)
         {
             this.maketalentsService = maketalentsService;
             this.repoStaffService = repoStaffService;
             this.repoPositionService = repoPositionService;
             this.googleSheetsNewStaffService = googleSheetsNewStaffService;
-            messageService = messageService;
+            this.messageService = messageService;
         }
         public async Task UpsertNewStaffAsync(CancellationToken cancellationToken)
         {

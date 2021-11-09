@@ -23,7 +23,7 @@ namespace SmartstaffApp.Controllers
         /// Добавляет строчку в файл по выдаче WelcomeBox
         /// </summary>
         [HttpPost("AddTestRowToSheet")]
-        public async Task<IActionResult> SendBirthdayNotification(CancellationToken cancellationToken)
+        public IActionResult AppendTestRowToGoogleSheet()
         {
             this.newStaffService.AddNewStaffToSheetAsync("Тестовый Тест Тестович", new DateTime(2022, 1, 1), "Тест");
             return Ok();
