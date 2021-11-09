@@ -45,7 +45,7 @@ namespace Repo.Services.Implementation
                 .ToListAsync();
         }
 
-        public async Task<int> InsertAsync(Staff staff, CancellationToken cancellationToken)
+        public async Task<int> UpsertAsync(Staff staff, CancellationToken cancellationToken)
         {
             var staffDB = await this.repoContsext.Staffs.Include(el => el.City).FirstOrDefaultAsync(el => el.Id == staff.Id);
 

@@ -13,7 +13,7 @@ namespace Repo.Services
         /// <summary>
         /// Создает новую группу
         /// </summary>
-        Task<int> InsertAsync(Staff staff, CancellationToken cancellationToken);
+        Task<int> UpsertAsync(Staff staff, CancellationToken cancellationToken);
 
         /// <summary>
         /// Получает группу по идентификатору

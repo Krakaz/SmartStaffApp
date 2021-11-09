@@ -166,7 +166,7 @@ namespace DataLoader.Maketalents.Services.Implementation
                         this.googleSheetsNewStaffService.AddNewStaffToSheetAsync(dtoStaff.FullName, dtoStaff.FirstWorkingDate, direction?.Name);
                     }
 
-                    await this.repoStaffService.InsertAsync(dtoStaff, cancellationToken);                    
+                    await this.repoStaffService.UpsertAsync(dtoStaff, cancellationToken);
                 }
             }
             catch(Exception ex)
