@@ -13,6 +13,5 @@ namespace DataLoader.MyTeam.Services
     {
         Task SendMessage(string chatId, string text, CancellationToken cancellationToken);
 
-        Task SendMessageToLeadersAsync(int messageTypeId, string text, CancellationToken cancellationToken);
     }
 }

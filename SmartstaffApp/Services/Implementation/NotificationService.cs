@@ -12,19 +12,19 @@ namespace SmartstaffApp.Services.Implementation
     internal class NotificationService : INotificationService
     {
         private readonly IStaffService staffService;
-        private readonly IMessageService messageService;
         private readonly DataLoader.Pozdravlala.Services.IPozdravlalaService pozdravlalaService;
         private readonly Repo.Services.INotificationLogsService notificationLogsService;
+        private readonly Business.Services.IMessageService messageService;
 
         public NotificationService(IStaffService staffService,
-            IMessageService messageService,
             DataLoader.Pozdravlala.Services.IPozdravlalaService pozdravlalaService,
-            Repo.Services.INotificationLogsService notificationLogsService)
+            Repo.Services.INotificationLogsService notificationLogsService,
+            Business.Services.IMessageService messageService)
         {
             this.staffService = staffService;
-            this.messageService = messageService;
             this.pozdravlalaService = pozdravlalaService;
             this.notificationLogsService = notificationLogsService;
+            this.messageService = messageService;
         }
         public async Task SendBirthdayNotificationAsync(CancellationToken cancellationToken)
         {
@@ -75,7 +75,7 @@ namespace SmartstaffApp.Services.Implementation
 
                     var msg = $"{staff.Birthday.Day} {month} сотрудник @[{staff.Email}] из направления {staff.Direction} отмечает свой {age} день рождения. {Environment.NewLine}{Congratulations}";
 
-                    await this.messageService.SendMessageToLeadersAsync(3, msg, cancellationToken);
+                    await this.messageService.SendMessageAsync(Business.Enums.MessageType.Birthday, msg, cancellationToken);
                 }
             }
             await this.notificationLogsService.InsertBirthdayLogAsync(cancellationToken);

@@ -11,11 +11,11 @@ namespace SmartstaffApp.Services.Implementation
     {
         private readonly DataLoader.Maketalents.Services.IMaketalentsService maketalentsService;
         private readonly Repo.Services.IApplicantService applicantService;
-        private readonly DataLoader.MyTeam.Services.IMessageService messageService;
+        private readonly Business.Services.IMessageService messageService;
 
         public ApplicantsService(DataLoader.Maketalents.Services.IMaketalentsService maketalentsService,
             Repo.Services.IApplicantService applicantService,
-            DataLoader.MyTeam.Services.IMessageService messageService)
+            Business.Services.IMessageService messageService)
         {
             this.maketalentsService = maketalentsService;
             this.applicantService = applicantService;
@@ -118,7 +118,7 @@ namespace SmartstaffApp.Services.Implementation
 
             if (!string.IsNullOrEmpty(msg))
             {
-                await this.messageService.SendMessageToLeadersAsync(4, msg, cancellationToken);
+                await this.messageService.SendMessageAsync(Business.Enums.MessageType.Applicants, msg, cancellationToken);
             }
         }
     }

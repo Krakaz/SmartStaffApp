@@ -15,14 +15,17 @@ namespace SmartstaffApp.Controllers
     [ApiController]
     public class StaffController : ControllerBase
     {
-        private readonly DataLoader.Maketalents.Services.IMaketalentsService maketalentsService;
+        private readonly Business.Services.IInterviewInformationService interviewInformationService;
         private readonly IApplicantsService applicantsService;
+        private readonly Business.Services.IStaffService staffService;
 
-        public StaffController(DataLoader.Maketalents.Services.IMaketalentsService maketalentsService,
-            IApplicantsService applicantsService)
+        public StaffController(Business.Services.IInterviewInformationService interviewInformationService,
+            IApplicantsService applicantsService,
+            Business.Services.IStaffService staffService)
         {
-            this.maketalentsService = maketalentsService;
+            this.interviewInformationService = interviewInformationService;
             this.applicantsService = applicantsService;
+            this.staffService = staffService;
         }
 
         /// <summary>
@@ -31,9 +34,7 @@ namespace SmartstaffApp.Controllers
         [HttpPost("LoadAllStaff")]
         public async Task<IActionResult> LoadAllStaff(CancellationToken cancellationToken)
         {
-            await this.maketalentsService.LoadNewStaffAsync(cancellationToken);
-            var year = DateTime.Now.Year;
-            await this.maketalentsService.UpdateFiredStaffAsync(year, cancellationToken);
+            await this.staffService.UpsertNewStaffAsync(cancellationToken);
             return Ok();
         }
 
@@ -45,7 +46,7 @@ namespace SmartstaffApp.Controllers
         public async Task<IActionResult> LoadIntervievInformation(CancellationToken cancellationToken)
         {            
             var year = DateTime.Now.Year;
-            await this.maketalentsService.LoadIntervievInformationAsync(year, cancellationToken);
+            await this.interviewInformationService.LoadIntervievInformationAsync(year, cancellationToken);
             return Ok();
         }
 

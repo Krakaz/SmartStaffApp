@@ -44,18 +44,21 @@ namespace SmartstaffApp.Pages
         private readonly DataLoader.Maketalents.Services.IMaketalentsService maketalentsService;
         private readonly Repo.Services.IGroupService groupService;
         private readonly DataLoader.MyTeam.Services.IChatService chatService;
+        private readonly Business.Services.IStaffService businessStaffService;
 
         public IndexModel(ILogger<IndexModel> logger, 
             IStaffService staffService, 
             DataLoader.Maketalents.Services.IMaketalentsService maketalentsService,
             Repo.Services.IGroupService groupService,
-            DataLoader.MyTeam.Services.IChatService chatService)
+            DataLoader.MyTeam.Services.IChatService chatService,
+            Business.Services.IStaffService businessStaffService)
         {
             _logger = logger;
             this.staffService = staffService;
             this.maketalentsService = maketalentsService;
             this.groupService = groupService;
             this.chatService = chatService;
+            this.businessStaffService = businessStaffService;
         }
 
 
@@ -89,9 +92,7 @@ namespace SmartstaffApp.Pages
         }
         public async Task OnPostUpdateStaff(CancellationToken cancellationToken)
         {
-            var year = DateTime.Now.Year;
-            await this.maketalentsService.LoadNewStaffAsync(cancellationToken);            
-            await this.maketalentsService.UpdateFiredStaffAsync(year, cancellationToken);
+            await this.businessStaffService.UpsertNewStaffAsync(cancellationToken);
             await this.FillPageData(this.Filter, cancellationToken);
         }
 

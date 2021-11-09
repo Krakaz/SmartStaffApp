@@ -14,12 +14,10 @@ namespace DataLoader.MyTeam.Services.Implementation
     internal class MessageService : IMessageService
     {
         private readonly IHttpClientFactory clientFactory;
-        private readonly Repo.Services.INotificationEmailsService notificationEmailsService;
 
-        public MessageService(IHttpClientFactory clientFactory, Repo.Services.INotificationEmailsService notificationEmailsService)
+        public MessageService(IHttpClientFactory clientFactory)
         {
             this.clientFactory = clientFactory;
-            this.notificationEmailsService = notificationEmailsService;
         }
         public async Task SendMessage(string chatId, string text, CancellationToken cancellationToken)
         {
@@ -39,15 +37,6 @@ namespace DataLoader.MyTeam.Services.Implementation
 
             using var responseStream = await response.Content.ReadAsStreamAsync();
             var requestResult = await JsonSerializer.DeserializeAsync<MessageResponse>(responseStream);
-        }
-
-        public async Task SendMessageToLeadersAsync(int messageTypeId, string text, CancellationToken cancellationToken)
-        {
-            var emails = await this.notificationEmailsService.GetAllAsync(cancellationToken);
-            foreach(var email in emails.Where(el => el.NotificationTypes.Any(tp => tp.Id == messageTypeId)))
-            {
-                await this.SendMessage(email.Email, text, cancellationToken);
-            }
         }
     }
 }

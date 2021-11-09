@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Business;
 using DataLoader;
 using GoogleSheetsWorker;
 using Microsoft.AspNetCore.Builder;
@@ -35,9 +36,8 @@ namespace SmartstaffApp
             services.AddSession();
 
             services.AddControllersWithViews();
-            services.AddRepositoryCollection(Configuration.GetConnectionString("DefaultConnection"));
-            services.AddDataLoaderCollection();
-            services.AddGoogleSheetsWorkerCollection();
+
+            services.BusinessCollection(Configuration);
 
             services.AddScoped<IStaffService, StaffService>();
             services.AddScoped<IEmployeeService, EmployeeService>();

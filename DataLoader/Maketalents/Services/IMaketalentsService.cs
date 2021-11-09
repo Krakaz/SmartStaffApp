@@ -1,4 +1,5 @@
 ﻿using DataLoader.Maketalents.Models;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,17 +13,12 @@ namespace DataLoader.Maketalents.Services
         /// <summary>
         /// Загружает информацию по проведенным и запланированным интервью
         /// </summary>
-        Task LoadIntervievInformationAsync(int year, CancellationToken cancellationToken);
+        Task<IList<InterviewModel>> LoadIntervievInformationAsync(int year, CancellationToken cancellationToken);
 
         /// <summary>
         /// Загружает информацию по новым сотрудникам
         /// </summary>
-        Task LoadNewStaffAsync(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Загружает информацию по уволенным сотрудникам
-        /// </summary>
-        Task UpdateFiredStaffAsync(int year, CancellationToken cancellationToken);
+        Task<IList<SourceStaff>> LoadNewStaffAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Получает список соискателей с нужными нам статусами
