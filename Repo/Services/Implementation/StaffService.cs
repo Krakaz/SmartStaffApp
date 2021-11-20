@@ -27,7 +27,7 @@ namespace Repo.Services.Implementation
 
         public async Task<IList<Staff>> GetActiveAsync(CancellationToken cancellationToken)
         {
-            return await this.repoContsext.Staffs.Where(el => el.IsActive == true).ToListAsync();
+            return await this.repoContsext.Staffs.Include(el => el.Positions).Where(el => el.IsActive == true).ToListAsync();
         }
 
         public async Task<Staff> GetByIdAsync(int id, CancellationToken cancellationToken)
